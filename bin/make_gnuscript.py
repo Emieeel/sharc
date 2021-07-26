@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 #******************************************
 #
@@ -23,7 +23,7 @@
 #
 #******************************************
 
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 # ======================================================================= #
 # Modules:
@@ -49,8 +49,8 @@ import colorsys
 # =========================================================0
 # compatibility stuff
 
-if sys.version_info[0]!=2:
-  print 'This is a script for Python 2!'
+if sys.version_info[0]!=3:
+  print('This is a script for Python 2!')
   sys.exit(0)
 
 if sys.version_info[1]<5:
@@ -221,10 +221,10 @@ Output:
 def main():
 
   if len(sys.argv)==1:
-    print 'Usage:\n./make_gnuscript.py <S> <D> <T> <Q> <5> <6> <7> <8>\n'
+    print('Usage:\n./make_gnuscript.py <S> <D> <T> <Q> <5> <6> <7> <8>\n')
     quit(1)
   if len(sys.argv)>9:
-    print 'Only multiplicities up to octets are supported!'
+    print('Only multiplicities up to octets are supported!')
     quit(1)
   states=sys.argv[1:]
   for i in range(len(states)):
@@ -309,7 +309,7 @@ def main():
   gnustring+='""\t\tu 1:($1>0 ? $2 : 1/0)\ttitle "Random number" \t\t\tlc rgbcolor "black"\tw lp'
   gnustring+='\n\npause -1\n\n'
 
-  print gnustring
+  print(gnustring)
 
 # ======================================================================= #
 

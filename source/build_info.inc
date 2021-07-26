@@ -1,0 +1,5 @@
+character(len=500), parameter :: build_date="ma 26 jul 2021 13:04:01 CEST"
+character(len=500), parameter :: build_host="Emiel-MonsterPC"
+character(len=500), parameter :: build_dir="/home/emielkoridon/sharc/source"
+character(len=500), parameter :: build_compiler="/usr/bin/gfortran"
+character(len=500), parameter :: use_pysharc="false"

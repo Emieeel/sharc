@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 """
 
 Standalone script for performing SHARC/LVC dynamics.
@@ -8,7 +8,7 @@ Standalone script for performing SHARC/LVC dynamics.
 @description: Python Module for SHARC Dynamics using the LVC model for the molecular system.
 
 """
-from __future__ import print_function
+
 
 import shutil
 import sys
@@ -132,7 +132,7 @@ def getQMout(QMin,SH2LVC):
     QMout={}
   
     nmult = len(QMin['states'])
-    r3N = range(3*QMin['natom'])
+    r3N = list(range(3*QMin['natom']))
   
     # Diagonalize Hamiltonian and expand to the full ms-basis
     U  = [[ 0. for i in range(QMin['nmstates']) ] for j in range(QMin['nmstates']) ]
@@ -286,7 +286,7 @@ class SHARC_LVC(SHARC_INTERFACE):
         """
 
         # find init, samestep, restart
-        QMin = dict( (key, value) for key, value in self.QMin.items() )
+        QMin = dict( (key, value) for key, value in list(self.QMin.items()) )
         QMin['natom'] = self.NAtoms
 
         key_tasks = tasks['tasks'].lower().split()
@@ -407,7 +407,7 @@ class SHARC_LVC(SHARC_INTERFACE):
         """
         states = self.states['states']
         nmult = len(states)
-        r3N = range(3*self.NAtoms)
+        r3N = list(range(3*self.NAtoms))
         # get access to SH2LVC
         SH2LVC = self.storage['SH2LVC']
         Om = SH2LVC['Om']

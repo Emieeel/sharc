@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 #******************************************
 #
@@ -23,7 +23,7 @@
 #
 #******************************************
 
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 # Script for the calculation of Wigner distributions from molden frequency files
 # 
@@ -44,8 +44,8 @@ import pprint
 # =========================================================0
 # compatibility stuff
 
-if sys.version_info[0]!=2:
-  print 'This is a script for Python 2!'
+if sys.version_info[0]!=3:
+  print('This is a script for Python 2!')
   quit(0)
 
 if sys.version_info[1]<5:
@@ -156,7 +156,7 @@ def try_read(l,index,typefunc,default):
   except IndexError:
     return typefunc(default)
   except ValueError:
-    print 'Could not initialize object!'
+    print('Could not initialize object!')
     quit(1)
 
 # ======================================================================================================================
@@ -271,7 +271,7 @@ class INITCOND:
       if line=='\n':
         continue
       if line=='':
-        print 'Initial condition %i not found in file %s' % (index,f.name)
+        print('Initial condition %i not found in file %s' % (index,f.name))
         quit(1)
     f.readline()        # skip one line, where "Atoms" stands
     atomlist=[]
@@ -354,20 +354,20 @@ def get_initconds(INFOS):
   try:
     initf=open(INFOS['filename'],'r')
   except IOError:
-    print 'Could not open file %s!' % (INFOS['filename'])
+    print('Could not open file %s!' % (INFOS['filename']))
     quit(1)
 
   line=initf.readline()
   if not check_initcond_version(line):
-    print 'File malformatted!'
+    print('File malformatted!')
     quit(1)
   if not 'Excited' in line:
-    print 'File is no output of excite.py!'
+    print('File is no output of excite.py!')
     quit(1)
   try:
     INFOS['ninit']=int(initf.readline().split()[1])
   except ValueError:
-    print 'Could not read number of initial conditions!'
+    print('Could not read number of initial conditions!')
     quit(1)
   initf.readline()    # skip natom
   INFOS['repr']=initf.readline().split()[1]
@@ -378,10 +378,10 @@ def get_initconds(INFOS):
   try:
     INFOS['eref']=float(initf.readline().split()[1])
   except ValueError:
-    print 'Could not read reference energy!'
+    print('Could not read reference energy!')
     quit(1)
   if INFOS['eref']==0.:
-    print 'WARNING: Reference energy is zero.'
+    print('WARNING: Reference energy is zero.')
 
   sys.stdout.write( 'Number of initial conditions: %i\n' % (INFOS['ninit']))
   sys.stdout.write( 'Reference energy %16.10f\n' % (INFOS['eref']))
@@ -481,7 +481,7 @@ def make_spectra_bootstrap(statelist,INFOS):
   ncond=len(statelist[0])
   for states in statelist:
     if not ncond==len(states):
-      print 'Error: Bootstrapping not possible for non-rectangular initconds file!'
+      print('Error: Bootstrapping not possible for non-rectangular initconds file!')
       return
 
   # make list of admissible initial conditions
@@ -851,7 +851,7 @@ set out '%s.png'
   out=open(outputfile,'w')
   out.write(gnustring)
   out.close()
-  print 'Gnuplot script written to "%s"' % (outputfile)
+  print('Gnuplot script written to "%s"' % (outputfile))
 
 # ======================================================================================================================
 # ======================================================================================================================
@@ -895,7 +895,7 @@ date %s
 
 
   if len(args)<=0:
-    print 'Please give the filename of the initconds.excited file!\n'+usage
+    print('Please give the filename of the initconds.excited file!\n'+usage)
     quit(1)
   filename=args[0]
   INFOS={}
@@ -951,13 +951,13 @@ date %s
 
     if INFOS['bootstraps']>0:
       make_spectra_bootstrap(statelist,INFOS)
-  print '\nOutput spectrum written to "%s".' % (outputfile)
+  print('\nOutput spectrum written to "%s".' % (outputfile))
 
   INFOS['outputfile']=outputfile
   if options.gp!='':
     make_gnuplot(options.gp,INFOS)
 
-  print ''
+  print('')
 
   # save the shell command
   command='python '+' '.join(sys.argv)

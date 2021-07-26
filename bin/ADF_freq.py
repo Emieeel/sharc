@@ -200,7 +200,7 @@ F=read_t21(filename)
 if not F:
   F=read_ADFout(filename)
 if not F:
-  print('Could not parse file %s!' % filename)
+  print(('Could not parse file %s!' % filename))
   sys.exit(1)
 
 string=format_molden(F)

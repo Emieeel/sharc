@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 #******************************************
 #
@@ -23,7 +23,7 @@
 #
 #******************************************
 
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 """
 author: Felix Plasser, Andrew Atkins
@@ -38,12 +38,12 @@ sys.path.insert(0, os.environ['SHARC']+'/../lib')
 try:
     import numpy
 except ImportError:
-    print 'numpy package not installed'
+    print('numpy package not installed')
     sys.exit()
 try:
     import file_handler, vib_molden, traj_manip, struc_linalg
 except ImportError:
-    print 'file_handler, vib_molden, traj_manip or struc_linalg not found. They should be part of this package. Check the installation and if $SHARC/../lib is part of the PYTHONPATH environment variable.'
+    print('file_handler, vib_molden, traj_manip or struc_linalg not found. They should be part of this package. Check the installation and if $SHARC/../lib is part of the PYTHONPATH environment variable.')
     sys.exit()
 
 version='2.1'
@@ -59,7 +59,7 @@ def centerstring(string,n,pad=' '):
 
 # ======================================================================= #
 def displaywelcome():
-  print 'Script for performing essential dynamics analysis started ...\n'
+  print('Script for performing essential dynamics analysis started ...\n')
   string='\n'
   string+='  '+'='*80+'\n'
   string+='||'+centerstring('',80)+'||\n'
@@ -75,7 +75,7 @@ def displaywelcome():
 This script reads output.xyz files and calculates the essential dynamics 
 (i.e., Shows you which are the most important motions).
   '''
-  print string
+  print(string)
 
 # ======================================================================= #
 def readfile(filename):
@@ -84,7 +84,7 @@ def readfile(filename):
     out=f.readlines()
     f.close()
   except IOError:
-    print 'File %s does not exist!' % (filename)
+    print('File %s does not exist!' % (filename))
     sys.exit(12)
   return out
 
@@ -99,10 +99,10 @@ def writefile(filename,content):
     elif isinstance(content,str):
       f.write(content)
     else:
-      print 'Content %s cannot be written to file!' % (content)
+      print('Content %s cannot be written to file!' % (content))
     f.close()
   except IOError:
-    print 'Could not write to file %s!' % (filename)
+    print('Could not write to file %s!' % (filename))
     sys.exit(13)
 
 # ======================================================================= #
@@ -119,7 +119,7 @@ def close_keystrokes():
 def question(question,typefunc,default=None,autocomplete=True,ranges=False):
   if typefunc==int or typefunc==float:
     if not default==None and not isinstance(default,list):
-      print 'Default to int or float question must be list!'
+      print('Default to int or float question must be list!')
       quit(1)
   if typefunc==str and autocomplete:
     readline.set_completer_delims(' \t\n;')
@@ -143,7 +143,7 @@ def question(question,typefunc,default=None,autocomplete=True,ranges=False):
       s+=' (range comprehension enabled)'
     s+=' '
 
-    line=raw_input(s)
+    line=input(s)
     line=re.sub('#.*$','',line).strip()
     if not typefunc==str:
       line=line.lower()
@@ -165,7 +165,7 @@ def question(question,typefunc,default=None,autocomplete=True,ranges=False):
         KEYSTROKES.write(line+' '*(40-len(line))+' #'+s+'\n')
         return False
       else:
-        print 'I didn''t understand you.'
+        print('I didn''t understand you.')
         continue
 
     if typefunc==str:
@@ -181,7 +181,7 @@ def question(question,typefunc,default=None,autocomplete=True,ranges=False):
         KEYSTROKES.write(line+' '*(40-len(line))+' #'+s+'\n')
         return f
       except ValueError:
-        print 'Please enter floats!'
+        print('Please enter floats!')
         continue
 
     if typefunc==int:
@@ -200,9 +200,9 @@ def question(question,typefunc,default=None,autocomplete=True,ranges=False):
         return out
       except ValueError:
         if ranges:
-          print 'Please enter integers or ranges of integers (e.g. "-3~-1  2  5~7")!'
+          print('Please enter integers or ranges of integers (e.g. "-3~-1  2  5~7")!')
         else:
-          print 'Please enter integers!'
+          print('Please enter integers!')
         continue
 
 ### input
@@ -233,34 +233,34 @@ def get_general():
 
   INFOS={}
 
-  print centerstring('Paths to trajectories',60,'-')
-  print '\nPlease enter the paths to all directories containing the "TRAJ_0XXXX" directories.\nE.g. Sing_2/ and Sing_3/. \nPlease enter one path at a time, and type "end" to finish the list.'
+  print(centerstring('Paths to trajectories',60,'-'))
+  print('\nPlease enter the paths to all directories containing the "TRAJ_0XXXX" directories.\nE.g. Sing_2/ and Sing_3/. \nPlease enter one path at a time, and type "end" to finish the list.')
   count=0
   paths=[]
   while True:
     path=question('Path: ',str,'end')
     if path=='end':
       if len(paths)==0:
-        print 'No path yet!'
+        print('No path yet!')
         continue
-      print ''
+      print('')
       break
     path=os.path.expanduser(os.path.expandvars(path))
     if not os.path.isdir(path):
-      print 'Does not exist or is not a directory: %s' % (path)
+      print('Does not exist or is not a directory: %s' % (path))
       continue
     if path in paths:
-      print 'Already included.'
+      print('Already included.')
       continue
     ls=os.listdir(path)
-    print ls
+    print(ls)
     for i in ls:
       if 'TRAJ' in i:
         count+=1
-    print 'Found %i subdirectories in total.\n' % count
+    print('Found %i subdirectories in total.\n' % count)
     paths.append(path)
   INFOS['paths']=paths
-  print 'Total number of subdirectories: %i\n' % (count)
+  print('Total number of subdirectories: %i\n' % (count))
 
   # try to obtain the maximum number of time steps in the trajectories
   maxlen=0
@@ -295,69 +295,69 @@ def get_general():
           dt=float(s[1])
 
 
-  print centerstring('Path to reference structure',60,'-')
-  print '\nPlease enter the path to the equilibrium structure of your system (in the same atomic order as that given in the dynamics output)'
-  print ''
+  print(centerstring('Path to reference structure',60,'-'))
+  print('\nPlease enter the path to the equilibrium structure of your system (in the same atomic order as that given in the dynamics output)')
+  print('')
   refpath=question('Path: ',str,'ref.xyz')
   refpath=os.path.expanduser(os.path.expandvars(refpath))
-  print ''
+  print('')
   reftype=question('Please give the type of coordinate file',str,os.path.splitext(refpath)[1][1:])
   INFOS['refstruc']=refpath
   INFOS['reftype']=reftype
-  print ''
+  print('')
 
 
 
   massweightques=question('Do you wish to use mass weighted coordinates?',bool,True)
   INFOS['massweight']=massweightques
-  print ''
+  print('')
 
 
-  print centerstring('Number of total steps in your trajectories',60,'-')
+  print(centerstring('Number of total steps in your trajectories',60,'-'))
   #print '\n total simulation time *2 and +1 if timestep is 0.5 fs'
-  print ''
+  print('')
   while True:
     numsteps=question('Number of time steps: ',int,[maxlen+1])[0]
     if numsteps <=0:
-      print 'Number of steps must be positive!'
+      print('Number of steps must be positive!')
       continue
     break
   INFOS['numsteps']=numsteps
-  print ''
+  print('')
 
-  print centerstring('The time step of your calculation',60,'-')
-  print ''
+  print(centerstring('The time step of your calculation',60,'-'))
+  print('')
   while True:
     timestep=question('Length of time step: ',float,[dt])[0]
     if timestep <=0.:
-      print 'Time step must be positive!'
+      print('Time step must be positive!')
       continue
     break
   INFOS['timestep']=timestep
-  print ''
+  print('')
 
   intervallist=[]
   intervallist=[]
-  print centerstring('Time steps to be analysed',60,'-')
-  print '\nPlease enter the time step intervals for which the statistical analysis should be carried out. '
-  print ''
+  print(centerstring('Time steps to be analysed',60,'-'))
+  print('\nPlease enter the time step intervals for which the statistical analysis should be carried out. ')
+  print('')
   while True:
     interval=question('Time step interval: ',int,[0,maxlen])
     #endtime=question('End time of interval: ',int,[maxlen])[0]
-    print ''
+    print('')
     #interval=[starttime,endtime]
     intervallist.append(interval)
     moreinterval=question('Do you want to add another time interval for analysis?',bool,False)
     if not moreinterval:
       break
   INFOS['interval']=intervallist
-  print ''
+  print('')
 
-  print centerstring('Results directory',60,'-')
-  print 'Please give the name of the subdirectory to be used for the results (use to save similar analysis in separate subdirectories).'
+  print(centerstring('Results directory',60,'-'))
+  print('Please give the name of the subdirectory to be used for the results (use to save similar analysis in separate subdirectories).')
   destin=question('Name for subdirectory?',str,'essdyn')
   INFOS['descr']=destin
-  print ''
+  print('')
   
   return INFOS
 
@@ -366,7 +366,7 @@ def ess_dyn(INFOS):
     """
     Essential dynamics analysis analysis. Typically this procedure is carried out.
     """
-    print 'Preparing essential dynamics analysis ...'
+    print('Preparing essential dynamics analysis ...')
     
     num_steps=INFOS['numsteps']
     descr=INFOS['descr']
@@ -379,12 +379,12 @@ def ess_dyn(INFOS):
     try:
         os.makedirs('ESS_DYN/'+descr+'/total_cov')
     except:
-        print 'Output directory could not be created. It either already exists or you have no writing access.'
+        print('Output directory could not be created. It either already exists or you have no writing access.')
         
     try:
         os.makedirs('ESS_DYN/'+descr+'/cross_av')
     except:
-        print 'Output directory could not be created. It either already exists or you have no writing access.'
+        print('Output directory could not be created. It either already exists or you have no writing access.')
     
     ref_struc = struc_linalg.structure('ref_struc') # define the structure that all the time step structures are superimposed onto
     ref_struc.read_file(ref_struc_file, ref_struc_type)
@@ -404,7 +404,7 @@ def ess_dyn(INFOS):
     width=30
     files=[]
     ntraj=0
-    print 'Checking the directories...'
+    print('Checking the directories...')
     for idir in INFOS['paths']:
       ls=os.listdir(idir)
       for itraj in ls:
@@ -415,29 +415,29 @@ def ess_dyn(INFOS):
         pathfile=path+'/output.xyz'
         if not os.path.isfile(pathfile):
           s+='%s NOT FOUND' % (pathfile)
-          print s
+          print(s)
           continue
         lstraj=os.listdir(path)
         valid=True 
         for i in lstraj:
           if i.lower() in forbidden:
             s+='DETECTED FILE %s' % (i.lower())
-            print s
+            print(s)
             valid=False
             break
         if not valid:
           continue
         s+='OK'
-        print s
+        print(s)
         ntraj+=1
         files.append(pathfile)
-    print 'Number of trajectories: %i' % (ntraj)
+    print('Number of trajectories: %i' % (ntraj))
     if ntraj==0:
-      print 'No valid trajectories found, exiting...'
+      print('No valid trajectories found, exiting...')
       sys.exit(0)
 
 #    Numtraj=(last_traj+1)-first_traj 
-    for i in xrange(ntraj):
+    for i in range(ntraj):
          
 #        ls=os.listdir(os.getcwd())
 #        numfile=len(ls)
@@ -453,7 +453,7 @@ def ess_dyn(INFOS):
 #        if trajfolder !=None:
 #           trajcheck=re.search('TRAJ',str(ls[j]))
 #        if trajcheck !=None:
-           print 'Reading trajectory ' + str(files[i]) + ' ...'
+           print('Reading trajectory ' + str(files[i]) + ' ...')
            #folder_name = str(files[i])[:-10]
            filepath=files[i]
            trajectory = traj_manip.trajectory(filepath, ref_struc, dt=dt)
@@ -472,11 +472,11 @@ def ess_dyn(INFOS):
                    cross_num_array[nr] += 1
                    cross_sum_array[nr] += tstep
                except:
-                   print 'num_steps has to be at least as large as the maximum number of time steps in any trajectory!'
+                   print('num_steps has to be at least as large as the maximum number of time steps in any trajectory!')
                    sys.exit()
                 
             
-    print 'Processing data ...'
+    print('Processing data ...')
     for ind,num in enumerate(cross_num_array):
         if num == 0:   # if num_steps was set larger than needed
             cross_num_array = cross_num_array[0:ind]
@@ -496,8 +496,8 @@ def ess_dyn(INFOS):
         
         av_struc = mol_calc.make_structure(exp_X_i)
         
-        for ii in xrange(3*num_at):
-            for iii in xrange(3*num_at):
+        for ii in range(3*num_at):
+            for iii in range(3*num_at):
                 cov_mat_i[ii,iii] = exp_XY_i[ii,iii] - exp_X_i[ii]*exp_X_i[iii]
                 cov_mat_i[iii,ii] = exp_XY_i[ii,iii] - exp_X_i[ii]*exp_X_i[iii]
         
@@ -522,7 +522,7 @@ def ess_dyn(INFOS):
         vib_molden.make_molden_file(struc=av_struc, freqs=cov_eigvals, vibs=cov_eigvects, out_file='ESS_DYN/'+descr+'/total_cov/'+      str(interv[0])+'-'+str(interv[1])+'.molden')
     
     # covariance of time averaged structures
-    for i in xrange(num_steps):
+    for i in range(num_steps):
         cross_mean_array[i] = cross_sum_array[i] / cross_num_array[i]
         
     for i,interv in enumerate(ana_ints):
@@ -533,8 +533,8 @@ def ess_dyn(INFOS):
         
         av_struc = mol_calc.make_structure(exp_X_i)
         
-        for ii in xrange(3*num_at):
-            for iii in xrange(3*num_at): 
+        for ii in range(3*num_at):
+            for iii in range(3*num_at): 
                 cov_mat_i[ii,iii] = exp_XY_i[ii,iii] - exp_X_i[ii]*exp_X_i[iii]
                 cov_mat_i[iii,ii] = exp_XY_i[ii,iii] - exp_X_i[ii]*exp_X_i[iii]
 
@@ -571,7 +571,7 @@ if __name__=='__main__':
   try:
     main()
   except KeyboardInterrupt:
-    print '\nCtrl+C makes me a sad SHARC ;-(\n'
+    print('\nCtrl+C makes me a sad SHARC ;-(\n')
     quit(0)
 
 #    ess_dyn(num_steps=num_steps)

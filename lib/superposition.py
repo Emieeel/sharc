@@ -8,7 +8,7 @@ import sys
 try:
     import numpy
 except:
-    print 'numpy not installed'
+    print('numpy not installed')
     sys.exit()
 
 class superposition:
@@ -32,7 +32,7 @@ class superposition:
         mv_c = self.mv_points - self.mv_av
         
         Ak_T_list = [] # list with all the Ak        
-        for i in xrange(len(ref_c)):
+        for i in range(len(ref_c)):
             Ak = self.A(ref_c[i]+mv_c[i],ref_c[i]-mv_c[i])
             Ak_T_list += [numpy.dot(Ak.transpose(),Ak)] # list of Ak's multiplied with transposed matrix
         Ak_T_array = numpy.array(Ak_T_list, float)

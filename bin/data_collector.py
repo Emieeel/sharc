@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 #******************************************
 #
@@ -23,7 +23,7 @@
 #
 #******************************************
 
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 # Interactive script for the setup of dynamics calculations for SHARC
 # 
@@ -54,8 +54,8 @@ except ImportError:
 # =========================================================0
 # compatibility stuff
 
-if sys.version_info[0]!=2:
-  print 'This is a script for Python 2!'
+if sys.version_info[0]!=3:
+  print('This is a script for Python 2!')
   sys.exit(0)
 
 if sys.version_info[1]<5:
@@ -267,7 +267,7 @@ def readfile(filename):
     out=f.readlines()
     f.close()
   except IOError:
-    print 'File %s does not exist!' % (filename)
+    print('File %s does not exist!' % (filename))
     sys.exit(12)
   return out
 
@@ -282,10 +282,10 @@ def writefile(filename,content):
     elif isinstance(content,str):
       f.write(content)
     else:
-      print 'Content %s cannot be written to file!' % (content)
+      print('Content %s cannot be written to file!' % (content))
     f.close()
   except IOError:
-    print 'Could not write to file %s!' % (filename)
+    print('Could not write to file %s!' % (filename))
     sys.exit(13)
 
 # ======================================================================= #
@@ -293,20 +293,20 @@ def mkdir(DIR):
     # mkdir the DIR, or clean it if it exists
     if os.path.exists(DIR):
         if os.path.isfile(DIR):
-            print '%s exists and is a file!' % (DIR)
+            print('%s exists and is a file!' % (DIR))
             sys.exit(69)
         elif os.path.isdir(DIR):
             if DEBUG:
-                print 'Remake\t%s' % DIR
+                print('Remake\t%s' % DIR)
             shutil.rmtree(DIR)
             os.makedirs(DIR)
     else:
         try:
             if DEBUG:
-                print 'Make\t%s' % DIR
+                print('Make\t%s' % DIR)
             os.makedirs(DIR)
         except OSError:
-            print 'Can not create %s\n' % (DIR)
+            print('Can not create %s\n' % (DIR))
             sys.exit(70)
 
 # ======================================================================================================================
@@ -384,7 +384,7 @@ def centerstring(string,n,pad=' '):
     return  pad*((n-l+1)/2)+string+pad*((n-l)/2)
 
 def displaywelcome():
-  print 'Script for data collecting started...\n'
+  print('Script for data collecting started...\n')
   string='\n'
   string+='  '+'='*80+'\n'
   string+='||'+centerstring('',80)+'||\n'
@@ -400,7 +400,7 @@ def displaywelcome():
 This script collects table data from SHARC trajectories, smooths them, synchronizes them,
 convolutes them, and computes averages and similar statistics.
   '''
-  print string
+  print(string)
 
 # ======================================================================================================================
 # ======================================================================================================================
@@ -419,7 +419,7 @@ def close_keystrokes():
 def question(question,typefunc,default=None,autocomplete=True,ranges=False):
   if typefunc==int or typefunc==float:
     if not default==None and not isinstance(default,list):
-      print 'Default to int or float question must be list!'
+      print('Default to int or float question must be list!')
       quit(1)
   if typefunc==str and autocomplete:
     readline.set_completer_delims(' \t\n;')
@@ -443,7 +443,7 @@ def question(question,typefunc,default=None,autocomplete=True,ranges=False):
       s+=' (range comprehension enabled)'
     s+=' '
 
-    line=raw_input(s)
+    line=input(s)
     line=re.sub('#.*$','',line).strip()
     if not typefunc==str:
       line=line.lower()
@@ -465,7 +465,7 @@ def question(question,typefunc,default=None,autocomplete=True,ranges=False):
         KEYSTROKES.write(line+' '*(40-len(line))+' #'+s+'\n')
         return False
       else:
-        print 'I didn''t understand you.'
+        print('I didn''t understand you.')
         continue
 
     if typefunc==str:
@@ -481,7 +481,7 @@ def question(question,typefunc,default=None,autocomplete=True,ranges=False):
         KEYSTROKES.write(line+' '*(40-len(line))+' #'+s+'\n')
         return f
       except ValueError:
-        print 'Please enter floats!'
+        print('Please enter floats!')
         continue
 
     if typefunc==int:
@@ -500,9 +500,9 @@ def question(question,typefunc,default=None,autocomplete=True,ranges=False):
         return out
       except ValueError:
         if ranges:
-          print 'Please enter integers or ranges of integers (e.g. "-3~-1  2  5~7")!'
+          print('Please enter integers or ranges of integers (e.g. "-3~-1  2  5~7")!')
         else:
-          print 'Please enter integers!'
+          print('Please enter integers!')
         continue
 
 # ======================================================================================================================
@@ -552,41 +552,41 @@ def get_general():
 
   # ---------------------------------------- File selection --------------------------------------
 
-  print centerstring('Paths to trajectories',60,'-')
-  print '\nPlease enter the paths to all directories containing the "TRAJ_0XXXX" directories.\nE.g. Sing_2/ and Sing_3/. \nPlease enter one path at a time, and type "end" to finish the list.'
+  print(centerstring('Paths to trajectories',60,'-'))
+  print('\nPlease enter the paths to all directories containing the "TRAJ_0XXXX" directories.\nE.g. Sing_2/ and Sing_3/. \nPlease enter one path at a time, and type "end" to finish the list.')
   count=0
   paths=[]
   while True:
     path=question('Path: ',str,'end')
     if path=='end':
       if len(paths)==0:
-        print 'No path yet!'
+        print('No path yet!')
         continue
-      print ''
+      print('')
       break
     path=os.path.expanduser(os.path.expandvars(path))
     if not os.path.isdir(path):
-      print 'Does not exist or is not a directory: %s' % (path)
+      print('Does not exist or is not a directory: %s' % (path))
       continue
     if path in paths:
-      print 'Already included.'
+      print('Already included.')
       continue
     ls=os.listdir(path)
-    print ls
+    print(ls)
     for i in ls:
       if 'TRAJ' in i or 'ICOND' in i:
         count+=1
-    print 'Found %i subdirectories in total.\n' % count
+    print('Found %i subdirectories in total.\n' % count)
     paths.append(path)
   INFOS['paths']=paths
-  print 'Total number of subdirectories: %i\n' % (count)
+  print('Total number of subdirectories: %i\n' % (count))
 
   # make list of TRAJ paths
   width=50
   forbidden=['crashed','running','dead','dont_analyze']
   dirs=[]
   ntraj=0
-  print 'Checking the directories...'
+  print('Checking the directories...')
   for idir in INFOS['paths']:
     ls=os.listdir(idir)
     for itraj in sorted(ls):
@@ -610,13 +610,13 @@ def get_general():
       #print s
       ntraj+=1
       dirs.append(path)
-  print 'Number of trajectories: %i' % (ntraj)
+  print('Number of trajectories: %i' % (ntraj))
   if ntraj==0:
-    print 'No valid trajectories found, exiting...'
+    print('No valid trajectories found, exiting...')
     sys.exit(0)
 
   # check the dirs
-  print 'Checking for common files...'
+  print('Checking for common files...')
   allfiles={}
   for d in dirs:
     for dirpath, dirnames, filenames in os.walk(d):
@@ -677,16 +677,16 @@ def get_general():
   for line in allfiles:
     if allfiles[line]>=2 and not any( [containsstring(i,line) for i in exclude] ):
       allfiles2[line]=allfiles[line]
-  print '\nList of files common to the trajectory directories:\n'
-  print '%6s %20s   %s' % ('Index','Number of appearance','Relative file path')
-  print '-'*58
+  print('\nList of files common to the trajectory directories:\n')
+  print('%6s %20s   %s' % ('Index','Number of appearance','Relative file path'))
+  print('-'*58)
   allfiles_index={}
   for iline,line in enumerate(sorted(allfiles2)):
     allfiles_index[iline]=line
-    print '%6i %20i   %s' % (iline,allfiles2[line],line)
+    print('%6i %20i   %s' % (iline,allfiles2[line],line))
 
   # choose one of these files
-  print '\nPlease give the relative file path of the file you want to collect:'
+  print('\nPlease give the relative file path of the file you want to collect:')
   while True:
     string=question('File path or index:',str,'0',False)
     try:
@@ -697,7 +697,7 @@ def get_general():
       INFOS['filepath']=string
       break
     else:
-      print 'I did not understand %s' % string
+      print('I did not understand %s' % string)
 
   # make list of files
   allfiles=[]
@@ -709,7 +709,7 @@ def get_general():
 
   # ---------------------------------------- Columns --------------------------------------
 
-  print '\n'+centerstring('Data columns',60,'-')+'\n'
+  print('\n'+centerstring('Data columns',60,'-')+'\n')
   # get number of columns
   filename=allfiles[0]
   testfile=readfile(filename)
@@ -717,15 +717,15 @@ def get_general():
     if not '#' in line:
       ncol=len(line.split())
       break
-  print 'Number of columns in the file:   %i' % (ncol)
+  print('Number of columns in the file:   %i' % (ncol))
   INFOS['ncol']=ncol
 
   # select columns
-  print '\nPlease select the data columns for the analysis:'
-  print 'For T column: \n  only enter one (positive) column index. \n  If 0, the line number will be used instead.'
-  print 'For X column: \n  enter one or more column indices. \n  If 0, all entries of that column will be set to 1. \n  If negative, the read numbers will be multiplied by -1.'
-  print 'For Y column: \n  enter as many column indices as for X. \n  If 0, all entries of that column will be set to 1. \n  If negative, the read numbers will be multiplied by -1.'
-  print ''
+  print('\nPlease select the data columns for the analysis:')
+  print('For T column: \n  only enter one (positive) column index. \n  If 0, the line number will be used instead.')
+  print('For X column: \n  enter one or more column indices. \n  If 0, all entries of that column will be set to 1. \n  If negative, the read numbers will be multiplied by -1.')
+  print('For Y column: \n  enter as many column indices as for X. \n  If 0, all entries of that column will be set to 1. \n  If negative, the read numbers will be multiplied by -1.')
+  print('')
   while True:
     INFOS['colT']=question('T column (time):',int,[1])[0]
     if 0<=INFOS['colT']<=ncol:
@@ -733,14 +733,14 @@ def get_general():
       # 1-n: use that line for time data
       break
     else:
-      print 'Please enter a number between 0 and %i!' % ncol
+      print('Please enter a number between 0 and %i!' % ncol)
   while True:
     INFOS['colX']=question('X columns:',int,[2],ranges=True)
     if all( [-ncol<=x<=ncol for x in INFOS['colX'] ] ):
       INFOS['nX']=len(INFOS['colX'])
       break
     else:
-      print 'Please enter a set of numbers between %i and %i!' % (-ncol,ncol)
+      print('Please enter a set of numbers between %i and %i!' % (-ncol,ncol))
   while True:
     default=[0 for i in INFOS['colX']]
     INFOS['colY']=question('Y columns:',int,default,ranges=True)
@@ -748,38 +748,38 @@ def get_general():
       INFOS['nY']=len(INFOS['colY'])
       break
     else:
-      print 'Please enter a set of %i numbers between %i and %i!' % (len(INFOS['colX']),-ncol,ncol)
+      print('Please enter a set of %i numbers between %i and %i!' % (len(INFOS['colX']),-ncol,ncol))
 
-  print 'Selected columns:'
-  print 'T: %s     X: %s    Y: %s\n' % (str(INFOS['colT']),str(INFOS['colX']),str(INFOS['colY']))
+  print('Selected columns:')
+  print('T: %s     X: %s    Y: %s\n' % (str(INFOS['colT']),str(INFOS['colX']),str(INFOS['colY'])))
 
   # ---------------------------------------- Analysis procedure --------------------------------------
 
-  print centerstring('Analysis procedure',60,'-')+'\n'
+  print(centerstring('Analysis procedure',60,'-')+'\n')
   show=question('Show possible workflow options?',bool,True)
   if show:
-    print '\nThe following diagram shows which workflows are possible with this script:'
-    print PIPELINE
+    print('\nThe following diagram shows which workflows are possible with this script:')
+    print(PIPELINE)
 
   # Question 1
-  print '\n'+centerstring('1 Smoothing',40,'-')+'\n'
+  print('\n'+centerstring('1 Smoothing',40,'-')+'\n')
   if question('Do you want to apply smoothing to the individual trajectories?',bool,False):
-    print '\nChoose one of the following smoothing functions:'
+    print('\nChoose one of the following smoothing functions:')
     for i in sorted(kernels):
-      print '%i  %s' % (i,kernels[i]['description'])
+      print('%i  %s' % (i,kernels[i]['description']))
     while True:
       i=question('Choose one of the functions:',int,[1])[0]
       if i in kernels:
         break
       else:
-        print 'Choose one of the following: %s' % (list(kernels))
+        print('Choose one of the following: %s' % (list(kernels)))
     w=question('Choose width of the smoothing function (in units of column %i):' % (INFOS['colT']),float,[10.0])[0]
     INFOS['smoothing']={'function': kernels[i]['f'](w)}
   else:
     INFOS['smoothing']={}
 
   # Question 2
-  print '\n'+centerstring('2 Synchronizing',40,'-')+'\n'
+  print('\n'+centerstring('2 Synchronizing',40,'-')+'\n')
   if question('Do you want to synchronize the data?',bool,True):
     INFOS['synchronizing']=True
   else:
@@ -797,41 +797,41 @@ def get_general():
 
   # Question 3
   if INFOS['synchronizing']:
-    print '\n'+centerstring('3 Convoluting along X',40,'-')+'\n'
+    print('\n'+centerstring('3 Convoluting along X',40,'-')+'\n')
     if question('Do you want to apply convolution in X direction?',bool,False):
-      print '\nChoose one of the following convolution kernels:'
+      print('\nChoose one of the following convolution kernels:')
       for i in sorted(kernels):
-        print '%i  %s' % (i,kernels[i]['description'])
+        print('%i  %s' % (i,kernels[i]['description']))
       while True:
         kern=question('Choose one of the functions:',int,[1])[0]
         if kern in kernels:
           break
         else:
-          print 'Choose one of the following: %s' % (list(kernels))
+          print('Choose one of the following: %s' % (list(kernels)))
       w=question('Choose width of the smoothing function (in units of the X columns):',float,[1.0])[0]
       INFOS['convolute_X']={'function': kernels[kern]['f'](w)}
       #print 'Choose the size of the grid along X:'
       INFOS['convolute_X']['npoints']=question('Size of the grid along X:',int,[25])[0]
-      print '\nChoose minimum and maximum of the grid along X:'
-      print 'Enter either a single number a (X grid from  xmin-a*width  to  xmax+a*width)'
-      print '        or two numbers a and b (X grid from  a  to  b)'
+      print('\nChoose minimum and maximum of the grid along X:')
+      print('Enter either a single number a (X grid from  xmin-a*width  to  xmax+a*width)')
+      print('        or two numbers a and b (X grid from  a  to  b)')
       INFOS['convolute_X']['xrange']=question('Xrange:',float,[kernels[kern]['factor']])
       if len(INFOS['convolute_X']['xrange'])>2:
         INFOS['convolute_X']['xrange']=INFOS['convolute_X']['xrange'][:2]
 
   # Question 4
   if INFOS['synchronizing'] and not INFOS['convolute_X']:
-    print '\n'+centerstring('4 Averaging',40,'-')+'\n'
+    print('\n'+centerstring('4 Averaging',40,'-')+'\n')
     if question('Do you want to average the data columns across all trajectories?',bool,False):
-      print 'Choose one of the following options:'
-      print '%i  %s' % (1,'Arithmetic average and standard deviation')
-      print '%i  %s' % (2,'Geometric average and standard deviation')
+      print('Choose one of the following options:')
+      print('%i  %s' % (1,'Arithmetic average and standard deviation'))
+      print('%i  %s' % (2,'Geometric average and standard deviation'))
       while True:
         av=question('Choose one of the options:',int,[1])[0]
         if av in [1,2]:
           break
         else:
-          print 'Choose one of the following: %s' % ([1,2])
+          print('Choose one of the following: %s' % ([1,2]))
       if av==1:
         INFOS['averaging']={'mean': mean_arith, 'stdev': stdev_arith}
       elif av==2:
@@ -839,17 +839,17 @@ def get_general():
 
   # Question 4
   if INFOS['synchronizing'] and not INFOS['convolute_X']:
-    print '\n'+centerstring('5 Total statistics',40,'-')+'\n'
+    print('\n'+centerstring('5 Total statistics',40,'-')+'\n')
     if question('Do you want to compute the total mean and standard deviation over all time steps?',bool,False):
-      print 'Choose one of the following options:'
-      print '%i  %s' % (1,'Arithmetic average and standard deviation')
-      print '%i  %s' % (2,'Geometric average and standard deviation')
+      print('Choose one of the following options:')
+      print('%i  %s' % (1,'Arithmetic average and standard deviation'))
+      print('%i  %s' % (2,'Geometric average and standard deviation'))
       while True:
         av=question('Choose one of the options:',int,[1])[0]
         if av in [1,2]:
           break
         else:
-          print 'Choose one of the following: %s' % ([1,2])
+          print('Choose one of the following: %s' % ([1,2]))
       if av==1:
         INFOS['statistics']={'mean': mean_arith, 'stdev': stdev_arith}
       elif av==2:
@@ -857,14 +857,14 @@ def get_general():
 
   # Question 6
   if INFOS['synchronizing'] and INFOS['convolute_X']:
-    print '\n'+centerstring('6 Sum over all Y',40,'-')+'\n'
+    print('\n'+centerstring('6 Sum over all Y',40,'-')+'\n')
     INFOS['sum_Y']=question('Do you want to sum up all Y values?',bool,False)
 
   # Question 7
   if INFOS['synchronizing'] and INFOS['convolute_X']:
-    print '\n'+centerstring('7 Integrate along X',40,'-')+'\n'
+    print('\n'+centerstring('7 Integrate along X',40,'-')+'\n')
     if question('Do you want to integrate in X direction?',bool,False):
-      print 'Please specify the lower and upper bounds for the integration:'
+      print('Please specify the lower and upper bounds for the integration:')
       while True:
         INFOS['integrate_X']['xrange']=question('Xmin and Xmax:',float,[0.0,10.0])
         if len(INFOS['integrate_X']['xrange'])>=2:
@@ -873,37 +873,37 @@ def get_general():
 
   # Question 8
   if INFOS['synchronizing'] and INFOS['convolute_X']:
-    print '\n'+centerstring('8 Convoluting along T',40,'-')+'\n'
+    print('\n'+centerstring('8 Convoluting along T',40,'-')+'\n')
     if question('Do you want to apply convolution in T direction?',bool,False):
-      print 'Choose one of the following convolution kernels:'
+      print('Choose one of the following convolution kernels:')
       for i in sorted(kernels):
-        print '%i  %s' % (i,kernels[i]['description'])
+        print('%i  %s' % (i,kernels[i]['description']))
       while True:
         kern=question('Choose one of the functions:',int,[1])[0]
         if kern in kernels:
           break
         else:
-          print 'Choose one of the following: %s' % (list(kernels))
+          print('Choose one of the following: %s' % (list(kernels)))
       w=question('Choose width of the smoothing function (in units of the T column):',float,[25.0])[0]
       INFOS['convolute_T']={'function': kernels[kern]['f'](w)}
       #print 'Choose the size of the grid along X:'
       INFOS['convolute_T']['npoints']=question('Size of the grid along T:',int,[200])[0]
-      print '\nChoose minimum and maximum of the grid along T:'
-      print 'Enter either a single number a (T grid from  xmin-a*width  to  xmax+a*width)'
-      print '        or two numbers a and b (T grid from  a  to  b)'
+      print('\nChoose minimum and maximum of the grid along T:')
+      print('Enter either a single number a (T grid from  xmin-a*width  to  xmax+a*width)')
+      print('        or two numbers a and b (T grid from  a  to  b)')
       INFOS['convolute_T']['xrange']=question('Trange:',float,[kernels[kern]['factor']])
       if len(INFOS['convolute_T']['xrange'])>2:
         INFOS['convolute_T']['xrange']=INFOS['convolute_T']['xrange'][:2]
 
   # Question 9
   if INFOS['synchronizing'] and INFOS['convolute_X'] and not INFOS['convolute_T']:
-    print '\n'+centerstring('9 Integrating along T',40,'-')+'\n'
+    print('\n'+centerstring('9 Integrating along T',40,'-')+'\n')
     INFOS['integrate_T']=question('Do you want to integrate in T direction?',bool,False)
 
   # Question 10
   if INFOS['synchronizing'] and INFOS['convolute_X']:
-    print '\n'+centerstring('10 Convert to Type2 dataset',40,'-')+'\n'
-    print 'If you performed integration along X, the data might be better formatted as Type2 dataset.'
+    print('\n'+centerstring('10 Convert to Type2 dataset',40,'-')+'\n')
+    print('If you performed integration along X, the data might be better formatted as Type2 dataset.')
     recommend=bool(INFOS['integrate_X'])
     INFOS['type3_to_type2']=question('Do you want to output as Type2 dataset?',bool,recommend)
 
@@ -932,123 +932,123 @@ def do_calc(INFOS):
 
   # TODO: 
 
-  print '\n\n>>>>>>>>>>>>>>>>>>>>>> Started data analysis\n'
+  print('\n\n>>>>>>>>>>>>>>>>>>>>>> Started data analysis\n')
 
   # ---------------------- collect data -------------------------------
   if True:
-    print 'Collecting the data ...'
+    print('Collecting the data ...')
     data1=collect_data(INFOS)
     outindex=1
     filename=make_filename(outindex,INFOS,outstring)
-    print '>>>> Writing output to file "%s"...\n' % filename
+    print('>>>> Writing output to file "%s"...\n' % filename)
     writefile(filename,stringType1(data1,INFOS))
 
   # ---------------------- apply temporal smoothing -------------------------------
   if INFOS['smoothing']:
-    print 'Applying temporal smoothing ...'
+    print('Applying temporal smoothing ...')
     data1=smoothing_xy(INFOS,data1)
     outindex=1
     outstring+='_sm'
     filename=make_filename(outindex,INFOS,outstring)
-    print '>>>> Writing output to file "%s"...\n' % filename
+    print('>>>> Writing output to file "%s"...\n' % filename)
     writefile(filename,stringType1(data1,INFOS))
 
   # ---------------------- apply synchronization -------------------------------
   if INFOS['synchronizing']:
-    print 'Synchronizing temporal data ...'
+    print('Synchronizing temporal data ...')
     data2 = synchronize(INFOS,data1)
     outindex=2
     outstring+='_sy'
     filename=make_filename(outindex,INFOS,outstring)
-    print '>>>> Writing output to file "%s"...\n' % filename
+    print('>>>> Writing output to file "%s"...\n' % filename)
     writefile(filename,stringType2(data2))
 
   # ---------------------- compute averages --------------------
   if INFOS['averaging']:
-    print 'Computing averages ...'
+    print('Computing averages ...')
     data2=calc_average(INFOS,data2)
     outindex=2
     outstring+='_av'
     filename=make_filename(outindex,INFOS,outstring)
-    print '>>>> Writing output to file "%s"...\n' % filename
+    print('>>>> Writing output to file "%s"...\n' % filename)
     writefile(filename,stringType2(data2))
 
   # ---------------------- compute averages --------------------
   if INFOS['statistics']:
-    print 'Computing total statistics ...'
+    print('Computing total statistics ...')
     data2=calc_statistics(INFOS,data2)
     outindex=2
     outstring+='_st'
     filename=make_filename(outindex,INFOS,outstring)
-    print '>>>> Writing output to file "%s"...\n' % filename
+    print('>>>> Writing output to file "%s"...\n' % filename)
     writefile(filename,stringType2(data2))
 
   # ---------------------- convoluting X --------------------
   if INFOS['convolute_X']:
-    print 'Convoluting data (along X column) ...'
+    print('Convoluting data (along X column) ...')
     data3=do_x_convolution(INFOS,data2)
     outindex=3
     outstring+='_cX'
     filename=make_filename(outindex,INFOS,outstring)
-    print '>>>> Writing output to file "%s"...\n' % filename
+    print('>>>> Writing output to file "%s"...\n' % filename)
     writefile(filename,stringType3(data3))
 
   # ---------------------- convoluting X --------------------
   if INFOS['sum_Y']:
-    print 'Summing all Y values ...'
+    print('Summing all Y values ...')
     data3=do_y_summation(INFOS,data3)
     outindex=3
     outstring+='_sY'
     filename=make_filename(outindex,INFOS,outstring)
-    print '>>>> Writing output to file "%s"...\n' % filename
+    print('>>>> Writing output to file "%s"...\n' % filename)
     writefile(filename,stringType3(data3))
 
   # ---------------------- integrating X --------------------
   if INFOS['convolute_X'] and INFOS['integrate_X']:
-    print 'Integrating data (along X column) ...'
+    print('Integrating data (along X column) ...')
     data3=integrate_X(INFOS,data3)
     outindex=3
     outstring+='_iX'
     filename=make_filename(outindex,INFOS,outstring)
-    print '>>>> Writing output to file "%s"...\n' % filename
+    print('>>>> Writing output to file "%s"...\n' % filename)
     writefile(filename,stringType3(data3))
 
   # ---------------------- convoluting T --------------------
   if INFOS['convolute_X'] and INFOS['convolute_T']:
-    print 'Convoluting data (along T column) ...'
+    print('Convoluting data (along T column) ...')
     data3=do_t_convolution(INFOS,data3)
     outindex=3
     outstring+='_cT'
     filename=make_filename(outindex,INFOS,outstring)
-    print '>>>> Writing output to file "%s"...\n' % filename
+    print('>>>> Writing output to file "%s"...\n' % filename)
     writefile(filename,stringType3(data3))
 
   # ---------------------- integrating T --------------------
   if INFOS['convolute_X'] and INFOS['integrate_T']:
-    print 'Integrating data (along T column) ...'
+    print('Integrating data (along T column) ...')
     data3=integrate_T(INFOS,data3)
     outindex=3
     outstring+='_iT'
     filename=make_filename(outindex,INFOS,outstring)
-    print '>>>> Writing output to file "%s"...\n' % filename
+    print('>>>> Writing output to file "%s"...\n' % filename)
     writefile(filename,stringType3(data3))
 
   # ---------------------- integrating T --------------------
   if INFOS['convolute_X'] and INFOS['type3_to_type2']:
-    print 'Converting to Type2 dataset ...'
+    print('Converting to Type2 dataset ...')
     data2=type3_to_type2(INFOS,data3)
     outindex=2
     outstring+='_cv'
     filename=make_filename(outindex,INFOS,outstring)
-    print '>>>> Writing output to file "%s"...\n' % filename
+    print('>>>> Writing output to file "%s"...\n' % filename)
     writefile(filename,stringType2(data2))
 
 
   # ---------------------- write -------------------------------
   #filename=make_filename(outindex,INFOS,outstring)
 
-  print
-  print 'Finished!'
+  print()
+  print('Finished!')
   #print 'Writing output to file "%s"...\n' % filename
   #if outindex==1:
     #writefile(filename,stringType1(data1,INFOS))
@@ -1118,7 +1118,7 @@ def collect_data(INFOS):
           y.append(+float( s[i-1] ))
       data1[f].append( tuple([t]+x+y) )
     data1[f].sort(key=lambda x: x[0])
-  print
+  print()
   return data1
 
 # ===========================================
@@ -1146,7 +1146,7 @@ def smoothing_xy( INFOS, data1 ):
             s+=w*T1[i]
         out.append(s/n)
       data2[key].append(out)
-  print
+  print()
   return data2
 
 # ===========================================
@@ -1179,7 +1179,7 @@ def synchronize( INFOS, data1 ):
       else:
         d=tuple( [ float('NaN') for i in T[1:] ] )
       data2[it1].append(d)
-  print
+  print()
   # convert to dict
   data3={'times':times,
          'data':data2}
@@ -1254,7 +1254,7 @@ def calc_average(INFOS,data2):
     ndata.append(len(array))
     times.append(t1)
     data3.append([tuple(means+stdevs)])
-  print
+  print()
   # remember which columns to print
   toprint=copy.copy(data2['toprint'][0])
   # make labels
@@ -1312,7 +1312,7 @@ def calc_statistics(INFOS,data2):
     ndata.append(len(arrays[ix]))
     times.append(t1)
     data3.append([tuple(means+stdevs)])
-  print
+  print()
   # remember which columns to print
   toprint=copy.copy(data2['toprint'][0])
   # make labels
@@ -1378,7 +1378,7 @@ def do_x_convolution(INFOS,data2):
     for ix in range(INFOS['convolute_X']['npoints']):
       d.append( [spec[i].spec[ix] for i in range(ny)] )
     data3.append(d)
-  print
+  print()
   # make labels
   labels=['Time','X_axis']
   for i,x in enumerate(INFOS['colX']):
@@ -1425,7 +1425,7 @@ def do_t_convolution(INFOS,data3):
     for ix1,x1 in enumerate(data3['xvalues']):
       for i in range(ny):
         allspec[ix1][i].add(data3['data'][it1][ix1][i],t1)
-  print
+  print()
   times=copy.copy(allspec[0][0].en)
   data4=[]
   for it1,t1 in enumerate(times):
@@ -1459,7 +1459,7 @@ def integrate_T(INFOS,data3):
       ny=len(data4['data'][it1][ix1])
       for i in range(ny):
         data4['data'][it1][ix1][i]+=data4['data'][it1-1][ix1][i]
-  print
+  print()
   return data4
 
 # ===========================================
@@ -1485,7 +1485,7 @@ def integrate_X(INFOS,data3):
       for i in range(ny):
         d[out][i]+=data3['data'][it1][ix1][i]
     data.append(d)
-  print
+  print()
   # make type3 dictionary:
   data5={}
   data5['data']=data
@@ -1511,7 +1511,7 @@ def do_y_summation(INFOS,data3):
       for i in range(ny):
         d[ix1][0]+=data3['data'][it1][ix1][i]
     data.append(d)
-  print
+  print()
   # make type3 dictionary:
   data5={}
   data5['data']=data
@@ -1680,7 +1680,7 @@ def stringType3(type3):
 # ======================================================================================================================
 
 def readType1(strings):
-  print 'Type1 cannot be read currently!'
+  print('Type1 cannot be read currently!')
   sys.exit(1)
   #data1={}
   #for line in strings:
@@ -1699,13 +1699,13 @@ def readType1(strings):
 # ======================================================================================================================
 
 def readType3(strings):
-  print 'Type2 cannot be read currently!'
+  print('Type2 cannot be read currently!')
   sys.exit(1)
 
 # ======================================================================================================================
 
 def readType3(strings):
-  print 'Type3 cannot be read currently!'
+  print('Type3 cannot be read currently!')
   sys.exit(1)
 
 # ======================================================================================================================
@@ -1727,12 +1727,12 @@ This interactive program reads table information from SHARC trajectories.
 
   INFOS=get_general()
 
-  print '\n\n'+centerstring('Full input',60,'#')+'\n'
+  print('\n\n'+centerstring('Full input',60,'#')+'\n')
   for item in INFOS:
-    print item, ' '*(25-len(item)), INFOS[item]
-  print ''
+    print(item, ' '*(25-len(item)), INFOS[item])
+  print('')
   calc=question('Do you want to do the specified analysis?',bool,True)
-  print ''
+  print('')
 
   if calc:
     INFOS=do_calc(INFOS)
@@ -1746,5 +1746,5 @@ if __name__ == '__main__':
   try:
     main()
   except KeyboardInterrupt:
-    print '\nCtrl+C makes me a sad SHARC ;-(\n'
+    print('\nCtrl+C makes me a sad SHARC ;-(\n')
     quit(0)

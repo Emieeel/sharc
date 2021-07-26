@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 """
 
 Standalone script for performing SHARC dynamics, reading a single QMout file at the beginning
@@ -8,7 +8,7 @@ Standalone script for performing SHARC dynamics, reading a single QMout file at 
 @description: Python Module for SHARC Dynamics using a single QMout file
 
 """
-from __future__ import print_function
+
 
 import shutil
 import sys

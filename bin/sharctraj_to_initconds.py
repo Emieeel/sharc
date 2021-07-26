@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 #******************************************
 #
@@ -23,7 +23,7 @@
 #
 #******************************************
 
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 # Script for extracting initial conditions from SHARC trajectories
 # 
@@ -43,8 +43,8 @@ starttime=datetime.datetime.now()
 # =========================================================
 # compatibility stuff
 
-if sys.version_info[0]!=2:
-  print 'This is a script for Python 2!'
+if sys.version_info[0]!=3:
+  print('This is a script for Python 2!')
   sys.exit(0)
 
 if sys.version_info[1]<5:
@@ -355,7 +355,7 @@ def readfile(filename):
     out=f.readlines()
     f.close()
   except IOError:
-    print 'File %s does not exist!' % (filename)
+    print('File %s does not exist!' % (filename))
     sys.exit(13)
   return out
 
@@ -370,11 +370,11 @@ def writefile(filename,content):
     elif isinstance(content,str):
       f.write(content)
     else:
-      print 'Content %s cannot be written to file!' % (content)
+      print('Content %s cannot be written to file!' % (content))
       sys.exit(14)
     f.close()
   except IOError:
-    print 'Could not write to file %s!' % (filename)
+    print('Could not write to file %s!' % (filename))
     sys.exit(15)
 
 # ======================================================================================================================
@@ -391,7 +391,7 @@ def try_read(l,index,typefunc,default):
   except IndexError:
     return typefunc(default)
   except ValueError:
-    print 'Could not initialize object!'
+    print('Could not initialize object!')
     quit(1)
 
 # ======================================================================================================================
@@ -614,7 +614,7 @@ from the initial condition's velocities."""
         com2 = get_center_of_mass(ic2)
         # calculate velocity of center of mass and remove it
         v_com = [ (com2[xyz]-com[xyz])/dt for xyz in range(3) ]
-        print v_com
+        print(v_com)
 
 
 def det(m):
@@ -706,7 +706,7 @@ def remove_rotations(ic):
             for xyz in range(3):
                 ic[i].veloc[xyz] -= v_rot[xyz] # remove rotational velocity
     else:
-        print 'WARNING: moment of inertia tensor is not invertible'
+        print('WARNING: moment of inertia tensor is not invertible')
 
 # ======================================================================================================================
 # ======================================================================================================================
@@ -859,7 +859,7 @@ def check_output_dat(data):
 # ======================================================================================================================
 def get_atoms_step(data,step,inf):
   if inf['version']==1.0:
-    print 'WARNING: trajectory data is in old format. Skipping...'
+    print('WARNING: trajectory data is in old format. Skipping...')
     return []
   ilines=-1
   while True:
@@ -929,7 +929,7 @@ def get_coords(INFOS):
         if valid:
           filelist.append(f)
   if len(filelist)<1:
-    print 'No trajectories found!'
+    print('No trajectories found!')
     sys.exit(1)
   filelist=[filelist[0]]+filelist
   #print filelist
@@ -941,13 +941,13 @@ def get_coords(INFOS):
   # go through the data
   for filename in filelist:
     if INFOS['debug']:
-      print '%-40s'%'  reading ...',datetime.datetime.now()-starttime
+      print('%-40s'%'  reading ...',datetime.datetime.now()-starttime)
     data=readfile(filename)
     if INFOS['debug']:
-      print '%-40s'%'  header ...',datetime.datetime.now()-starttime
+      print('%-40s'%'  header ...',datetime.datetime.now()-starttime)
     inf=check_output_dat(data)
     if inf['version']==1.0:
-      print '(skipping version 1.0 file)'
+      print('(skipping version 1.0 file)')
       continue
 
     # choose the step:
@@ -959,24 +959,24 @@ def get_coords(INFOS):
     if b<0:
       b=n+1+b
     if not (0<=a<=b<=n):
-      print '(skipping, problems in steps: 0<=%i<=%i<=%i)' % (a,b,n)
+      print('(skipping, problems in steps: 0<=%i<=%i<=%i)' % (a,b,n))
       continue
     step=random.randint( a,b )
 
     # get the atoms
     if INFOS['debug']:
-      print '%-40s'%'  get step ...',datetime.datetime.now()-starttime
+      print('%-40s'%'  get step ...',datetime.datetime.now()-starttime)
     atomlist=get_atoms_step(data,step,inf)
 
     igeom+=1
     if not INFOS['KTR']:
       if INFOS['debug']:
-        print '%-40s'%'  restore ...',datetime.datetime.now()-starttime
+        print('%-40s'%'  restore ...',datetime.datetime.now()-starttime)
       restore_center_of_mass(atomlist)
       remove_translations(atomlist)
       remove_rotations(atomlist)
       if INFOS['debug']:
-        print '%-40s'%'  Done',datetime.datetime.now()-starttime
+        print('%-40s'%'  Done',datetime.datetime.now()-starttime)
     sys.stdout.write('Structure % 5i: %s  Step: % 5i/% 5i  ' % (igeom-1,filelist[igeom-1],step,inf['nmax']))
     if igeom==1:
       sys.stdout.write('(Reference geometry)')
@@ -984,10 +984,10 @@ def get_coords(INFOS):
     else:
       sys.stdout.write('(Saved for initconds)')
       ic_list.append( INITCOND(atomlist,0.,0.) )
-    print ''
+    print('')
 
   if len(ic_list)==0:
-    print 'No initial conditions found!'
+    print('No initial conditions found!')
     sys.exit(1)
 
   return molecule,ic_list
@@ -1071,7 +1071,7 @@ The data is then transformed and written to initconds format.
   # arg processing
   (options, args) = parser.parse_args()
   if len(args)==0:
-    print usage
+    print(usage)
     quit(1)
 
   # options
@@ -1088,7 +1088,7 @@ The data is then transformed and written to initconds format.
   
 
 
-  print '''Initial condition generation started...
+  print('''Initial condition generation started...
 directories                    = "%s"
 Random number generator seed   = %i
 Pick randomly from these steps = %i to %i  %s
@@ -1097,7 +1097,7 @@ OUTPUT file                    = "%s"''' % (INFOS['dirs'],
                                          options.S[0],options.S[1],
                                          ['','(negative indices are counted from the end)'][any(i<0 for i in options.S)],
                                         INFOS['outfile']
-                                        )
+                                        ))
 
 
   #print 'Generating %i initial conditions' % amount

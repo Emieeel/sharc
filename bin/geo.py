@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 #******************************************
 #
@@ -23,7 +23,7 @@
 #
 #******************************************
 
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 import os
 import sys
@@ -36,8 +36,8 @@ from optparse import OptionParser
 # =========================================================0
 # compatibility stuff
 
-if sys.version_info[0]!=2:
-  print 'This is a script for Python 2!'
+if sys.version_info[0]!=3:
+  print('This is a script for Python 2!')
   sys.exit(0)
 
 if sys.version_info[1]<5:
@@ -408,7 +408,7 @@ def Boeyens6(ph,th):
   if Radians:
     ph/=deg2rad
     th/=deg2rad
-  for angles, conformation in BOEYENS_6.items():
+  for angles, conformation in list(BOEYENS_6.items()):
       dist_list.append([conformation, orthodromic_distance(angles[0], angles[1], ph, th)])
   dist_list.sort(key=lambda d: d[1])
   return dist_list[0][0]
@@ -421,7 +421,7 @@ def Boeyens5(ph):
   dist_list = []
   if Radians:
     ph/=deg2rad
-  for angles,conformation in BOEYENS_5.items():
+  for angles,conformation in list(BOEYENS_5.items()):
       dist_list.append([conformation, angular_distance(angles, ph)])
   dist_list.sort(key=lambda d: d[1])
   return dist_list[0][0]
@@ -783,7 +783,7 @@ J. Cryst. Mol. Struct., 1977, 8, 317-320.
   iline=0
   while not answered:
     try:
-      s=raw_input()
+      s=input()
       iline+=1
       s=re.sub('#.*$','',s)
       if 'end' in s:
@@ -800,7 +800,7 @@ J. Cryst. Mol. Struct., 1977, 8, 317-320.
     except IndexError:
       pass
 
-  print tableheader(req)
+  print(tableheader(req))
   sys.stderr.write('Number of internal coordinate requests: % 3i\n' % (len(req)) )
 
   line=0
@@ -832,7 +832,7 @@ J. Cryst. Mol. Struct., 1977, 8, 317-320.
 
     formatstring='%%%i.%if ' % (f,p)
     s=calculate(g,req,comm)
-    print formatstring % ((t+Tshift)*dt) +s
+    print(formatstring % ((t+Tshift)*dt) +s)
     t+=1
     sys.stderr.write('\rNumber of geometries: % 6i' % (t))
 
@@ -843,5 +843,5 @@ if __name__ == '__main__':
   try:
     main()
   except KeyboardInterrupt:
-    print '\nExited without writing...\n'
+    print('\nExited without writing...\n')
     quit(0)

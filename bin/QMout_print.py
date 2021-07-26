@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 #******************************************
 #
@@ -23,7 +23,7 @@
 #
 #******************************************
 
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 # Script for printing excitation energies, oscillator strengths and other quantities from QM.out file
 # 
@@ -46,8 +46,8 @@ except ImportError:
 # =========================================================0
 # compatibility stuff
 
-if sys.version_info[0]!=2:
-  print 'This is a script for Python 2!'
+if sys.version_info[0]!=3:
+  print('This is a script for Python 2!')
   sys.exit(0)
 
 if sys.version_info[1]<5:
@@ -98,7 +98,7 @@ def readfile(filename):
     out=f.readlines()
     f.close()
   except IOError:
-    print 'File %s could not be read!' % (filename)
+    print('File %s could not be read!' % (filename))
     sys.exit(12)
   return out
 
@@ -136,7 +136,7 @@ def read_QMout(path,nstates,natom,request):
       while True:
         iline+=1
         if iline>=len(lines):
-          print 'Could not find target %s with flag %i in file %s!' % (t,targets[t]['flag'],f)
+          print('Could not find target %s with flag %i in file %s!' % (t,targets[t]['flag'],f))
           sys.exit(11)
         line=lines[iline]
         if '! %i' % (targets[t]['flag']) in line:
@@ -184,7 +184,7 @@ class diagonalizer:
     exe=os.getenv('SHARC')
     exe=os.path.expanduser(os.path.expandvars(exe))+'/diagonalizer.x'
     if not os.path.isfile(exe):
-      print 'SHARC auxilliary diagonalizer not found at %s!' % (exe)
+      print('SHARC auxilliary diagonalizer not found at %s!' % (exe))
       sys.exit(1)
     self.exe=exe
   def eigh(self,H):
@@ -367,7 +367,7 @@ excitation energies and oscillator strengths.
       else:
         de=(e-energies[0])*27.21
       string='%5i %10s%02i %16.10f %12.8f %12.8f   %6.4f' % (istate+1,IToMult[ist[0]][0],ist[1]-(ist[0]<=2),e,de,fosc[-1],spin)
-      print string
+      print(string)
   else:
     for istate in range(QMin['nmstates']):
       e=QMout['h'][0][istate][istate].real
@@ -393,7 +393,7 @@ excitation energies and oscillator strengths.
       string='%5i %10s%02i %16.10f %12.8f %12.8f   %6.4f' % (istate+1,IToMult[m][0],s-(m<=2),e,de,fosc[-1],m)
       if istate==initial:
         string+=' #initial state'
-      print string
+      print(string)
 
 
 

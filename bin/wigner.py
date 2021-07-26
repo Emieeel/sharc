@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 #******************************************
 #
@@ -23,7 +23,7 @@
 #
 #******************************************
 
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 # Script for the calculation of Wigner distributions from molden frequency files
 #
@@ -42,8 +42,8 @@ import time
 # =========================================================0
 # compatibility stuff
 
-if sys.version_info[0]!=2:
-  print 'This is a script for Python 2!'
+if sys.version_info[0]!=3:
+  print('This is a script for Python 2!')
   sys.exit(0)
 
 if sys.version_info[1]<5:
@@ -63,7 +63,7 @@ np = True
 try:
     import numpy
 except ImportError:
-    print 'numpy package not installed'
+    print('numpy package not installed')
     np = False
 
 
@@ -363,7 +363,7 @@ def try_read(l,index,typefunc,default):
   except IndexError:
     return typefunc(default)
   except ValueError:
-    print 'Could not initialize object!'
+    print('Could not initialize object!')
     quit(1)
 
 # ======================================================================================================================
@@ -529,16 +529,16 @@ class INITCOND:
 # ======================================================================================================================
 # ======================================================================================================================
 def ask_for_masses():
-  print '''
+  print('''
 Option -m used, please enter non-default masses:
 + number mass           add non-default mass <mass> for atom <number>
 - number                remove non-default mass for atom <number> (default mass will be used)
 show                    show non-default atom masses
 end                     finish input for non-default masses
-'''
+''')
   MASS_LIST={}
   while True:
-    line=raw_input()
+    line=input()
     if 'end' in line:
       break
     if 'show' in line:
@@ -546,7 +546,7 @@ end                     finish input for non-default masses
       for i in MASS_LIST:
         s+='% 4i %18.12f\n' % (i,MASS_LIST[i])
       s+='-----------------------'
-      print s
+      print(s)
       continue
     if '+' in line:
       f=line.split()
@@ -581,7 +581,7 @@ def get_mass(symb,number):
     try:
       return MASSES[symb]
     except KeyError:
-      print 'No default mass for atom %s' % (symb)
+      print('No default mass for atom %s' % (symb))
       quit(1)
 
 
@@ -600,7 +600,7 @@ file. Returns molecule and modes as the other function does.
   while not 'FR-COORD' in data[iline]:
     iline+=1
     if iline==len(data):
-      print 'Could not find coordinates in %s!' % (filename)
+      print('Could not find coordinates in %s!' % (filename))
       quit(1)
   # get atoms
   iline+=1
@@ -632,7 +632,7 @@ file. Returns molecule and modes as the other function does.
 
   # warn, if too few normal modes were found
   if nmodes<3*natom:
-    print '*'*51+'\nWARNING: Less than 3*N_atom normal modes extracted!\n'+'*'*51+'\n'
+    print('*'*51+'\nWARNING: Less than 3*N_atom normal modes extracted!\n'+'*'*51+'\n')
 
   # obtain all frequencies, including low ones
   iline=0
@@ -645,7 +645,7 @@ file. Returns molecule and modes as the other function does.
       mode={'freq':float(data[iline+imode])*CM_TO_HARTREE * scaling}
       modes.append(mode)
     except ValueError:
-      print '*'*51+'\nWARNING: Less than 3*N_atom normal modes, but no [N_FREQ] keyword!\n'+'*'*51+'\n'
+      print('*'*51+'\nWARNING: Less than 3*N_atom normal modes, but no [N_FREQ] keyword!\n'+'*'*51+'\n')
       nmodes=imode
       break
 
@@ -669,7 +669,7 @@ file. Returns molecule and modes as the other function does.
         norm += modes[imode]['move'][j][xyz]**2
     norm = math.sqrt(norm)
     if norm ==0.0 and modes[imode]['freq']>=LOW_FREQ*CM_TO_HARTREE:
-      print 'WARNING: Displacement vector of mode %i is null vector. Ignoring this mode!' % (imode+1)
+      print('WARNING: Displacement vector of mode %i is null vector. Ignoring this mode!' % (imode+1))
       modes[imode]['freq']=0.
 
 
@@ -678,14 +678,14 @@ file. Returns molecule and modes as the other function does.
     # delete low modes and modes with zero norm
     for imode in range(nmodes):
       if modes[imode]['freq']<0.:
-        print 'Detected negative frequency!'
+        print('Detected negative frequency!')
       if sum( [ abs(x)for y in modes[imode]['move']  for x in y ] ):
         if modes[imode]['freq']>=LOW_FREQ*CM_TO_HARTREE:
           newmodes.append(modes[imode])   
   else:
     for imode in range(nmodes):
       if modes[imode]['freq']<0.:
-        print 'Detected negative frequency!'
+        print('Detected negative frequency!')
       if modes[imode]['freq']>=LOW_FREQ*CM_TO_HARTREE:
         newmodes.append(modes[imode])
   modes=newmodes  
@@ -753,8 +753,8 @@ mode for the system at a certain temperature."""
   exponent = freq/(0.695035*temperature)  # factor for conversion cm-1 to K
   if exponent > 800:
     exponent = 600
-    print '''The partition function is too close to zero due to very low temperature or very high frequency! It was set to %e''' % (math.exp(-exponent/2.) /\
- ( 1. - math.exp(-exponent) ))
+    print('''The partition function is too close to zero due to very low temperature or very high frequency! It was set to %e''' % (math.exp(-exponent/2.) /\
+ ( 1. - math.exp(-exponent) )))
   partition_function = math.exp(-exponent/2.) / \
                        ( 1. - math.exp(-exponent) )
   n=-1
@@ -801,9 +801,9 @@ The function returns a probability for this set of parameters."""
       if n > 500:
         if high_temp:
           n = -1
-          print 'Highest considered vibrational state reached! Discarding this probability.'
+          print('Highest considered vibrational state reached! Discarding this probability.')
         else:
-          print 'The calculated excited vibrational state for this normal mode exceeds the limit of the calculation.\nThe harmonic approximation is not valid for high vibrational states of low-frequency normal modes. The vibrational state ',n,' was set to 150. If you want to discard these states instead (due to oversampling of state nr 150), use the -T option.'
+          print('The calculated excited vibrational state for this normal mode exceeds the limit of the calculation.\nThe harmonic approximation is not valid for high vibrational states of low-frequency normal modes. The vibrational state ',n,' was set to 150. If you want to discard these states instead (due to oversampling of state nr 150), use the -T option.')
           n = 500
     if n == 0: # vibrational ground state
         return (math.exp(-Q**2) * math.exp(-P**2), 0.)
@@ -915,7 +915,7 @@ from the initial condition's velocities."""
         com2 = get_center_of_mass(ic2)
         # calculate velocity of center of mass and remove it
         v_com = [ (com2[xyz]-com[xyz])/dt for xyz in range(3) ]
-        print v_com
+        print(v_com)
 
 
 def det(m):
@@ -1007,7 +1007,7 @@ def remove_rotations(ic):
             for xyz in range(3):
                 ic[i].veloc[xyz] -= v_rot[xyz] # remove rotational velocity
     else:
-        print 'WARNING: moment of inertia tensor is not invertible'
+        print('WARNING: moment of inertia tensor is not invertible')
 
 def constrain_displacement(molecule, ic, threshold=0.5):
     """This function ensures, that each atom of a generated initial
@@ -1022,7 +1022,7 @@ original position. Threshold is given in bohr."""
         displacement = math.sqrt(displacement)
         if displacement > threshold:
             if DEBUG:
-                print 'displacment for atom %i %s is %f' % (i, atom.symb, displacement)
+                print('displacment for atom %i %s is %f' % (i, atom.symb, displacement))
             # shorten diff_vector to length of threshold
             for xyz in range(3):
                 diff_vector[xyz] /= displacement/threshold
@@ -1037,7 +1037,7 @@ transform them to mass-weighted coordinates and seeing which of the four methods
 was able to do so via checking if the normal modes are now orthogonal. The mass-
 weighted normal coordinates are then returned'''
 
-  print '\nStarting normal mode format determination...'
+  print('\nStarting normal mode format determination...')
 
   #generate different set of modes that each undergo a different transformation
   #modes_1, modes_2, modes_3 and modes are represented by the numbers 1, 2, 3
@@ -1057,7 +1057,7 @@ weighted normal coordinates are then returned'''
         norm += modes_2[imode]['move'][j][xyz]**2*atom.mass/U_TO_AMU
     norm = math.sqrt(norm)
     if norm == 0.0 and modes[imode]['freq']>=LOW_FREQ*CM_TO_HARTREE:
-      print 'WARNING: Displacement vector of mode %i is null vector. Ignoring this mode!' % (imode+1)
+      print('WARNING: Displacement vector of mode %i is null vector. Ignoring this mode!' % (imode+1))
       for normmodes in allmodes:
         normmodes[imode]['freq']=0.0
     for j, atom in enumerate(molecule):
@@ -1066,7 +1066,7 @@ weighted normal coordinates are then returned'''
         modes_2[imode]['move'][j][xyz] *= math.sqrt(atom.mass/U_TO_AMU)
         modes_3[imode]['move'][j][xyz] *= math.sqrt(atom.mass/U_TO_AMU)/math.sqrt(ANG_TO_BOHR)
   if flag != 0:
-    print "Using input flag",flag, "for", normformat[flag-1],"coordinates. Skipping normal mode analysis. "
+    print("Using input flag",flag, "for", normformat[flag-1],"coordinates. Skipping normal mode analysis. ")
     return allmodes[flag-1]
 
   elif int(flag) <= 4:
@@ -1133,29 +1133,29 @@ weighted normal coordinates are then returned'''
         nm_flag = i
     #check for input flag
     try:
-      print "Final format specifier: %s [%s]" % (nm_flag+1, normformat[nm_flag])
+      print("Final format specifier: %s [%s]" % (nm_flag+1, normformat[nm_flag]))
     except UnboundLocalError:
-      print "The normal mode analysis was unable to diagonalize the normal modes."
-      print "Input is therefore neither in cartesian, gaussian-type, Columbus-type, or mass weighted coordinates."
+      print("The normal mode analysis was unable to diagonalize the normal modes.")
+      print("Input is therefore neither in cartesian, gaussian-type, Columbus-type, or mass weighted coordinates.")
       exit(1)
     if len(possibleflags) != 1:
       string = '\n'
       for entry in possibleflags:
         string += '  %s \n' % (normformat[entry-1])
-      print "Multiple possible flags have been identified: %s" % (string[:-2])
-      print "The most likely assumption is %s coordinates."  % (normformat[nm_flag])
-      print "These have been used in the creation of inital conditions."
-      print "\nYou can override this behavior by setting the -f [int] flag in the command line:"
+      print("Multiple possible flags have been identified: %s" % (string[:-2]))
+      print("The most likely assumption is %s coordinates."  % (normformat[nm_flag]))
+      print("These have been used in the creation of inital conditions.")
+      print("\nYou can override this behavior by setting the -f [int] flag in the command line:")
       string = ''
       for mode in range(len(normformat)):
          string += "  "+str(mode+1) + "\t" + (normformat[mode]) +"\n"
-      print string
+      print(string)
     else:
-      print "The normal modes input format was determined to be %s coordinates." % (normformat[nm_flag])
+      print("The normal modes input format was determined to be %s coordinates." % (normformat[nm_flag]))
     #return the set of transformed normal modes that resulted in an orthogonal matrix (mass-weighted)
     return allmodes[nm_flag]
   else:
-    print "Wrong input, please specify a valid flag [0,1,2,3,4]!"
+    print("Wrong input, please specify a valid flag [0,1,2,3,4]!")
     quit(1)
 
 
@@ -1185,7 +1185,7 @@ Method is based on L. Sun, W. L. Hase J. Chem. Phys. 133, 044313
       probability = wigner(random_Q, random_P, mode)
       if probability[0]>1. or probability[0]<0.:
         if temperature == 0:
-          print 'WARNING: wrong probability %f detected!' % (probability[0])
+          print('WARNING: wrong probability %f detected!' % (probability[0]))
       elif probability[0] > random.random():
         break # coordinates accepted
     # now transform the dimensionless coordinate into a real one
@@ -1287,7 +1287,7 @@ def create_initial_conditions_list(amount, molecule, modes):
     """This function creates 'amount' initial conditions from the
 data given in 'molecule' and 'modes'. Output is returned
 as a list containing all initial condition objects."""
-    print 'Sampling initial conditions'
+    print('Sampling initial conditions')
     ic_list = []
     width = 50
     idone = 0
@@ -1299,7 +1299,7 @@ as a list containing all initial condition objects."""
         done = idone*width/(amount)
         sys.stdout.write('\rProgress: ['+'='*done+' '*(width-done)+'] %3i%%' % (done*100/width))
         sys.stdout.flush()
-    print '\n'
+    print('\n')
     return ic_list
 
 # ======================================================================================================================
@@ -1327,12 +1327,12 @@ def lvc_input(molecule, modes):
     Print an input file for for SHARC_LVC.py
     """
     if not len(modes)==len(modes[0]['move']*3):
-      print 'Error: Less than 3N normal modes in file!'
-      print 'For LVC model setup, all 3N modes need to be present.'
-      print 'Adding additional rotational and translational null-vectors'
+      print('Error: Less than 3N normal modes in file!')
+      print('For LVC model setup, all 3N modes need to be present.')
+      print('Adding additional rotational and translational null-vectors')
       nr_missing=len(modes[0]['move']*3)-len(modes)
       if nr_missing != 6:
-        print 'There are %i normal modes missing that will be assumed to be null-vectors! Make sure this is intended.' % nr_missing
+        print('There are %i normal modes missing that will be assumed to be null-vectors! Make sure this is intended.' % nr_missing)
         time.sleep(2)
       empty_modes=[ {'freq' : 0.0 , 'move' : [ [0,0,0] for x in range(len(modes[0]['move']))]} for x in range(nr_missing)]
       empty_modes.extend(modes)
@@ -1340,7 +1340,7 @@ def lvc_input(molecule, modes):
 
       
       #sys.exit(1)
-    print "Creating V0.txt for SHARC_LVC.py ..."
+    print("Creating V0.txt for SHARC_LVC.py ...")
 
     wf = open('V0.txt', 'w')
     wf.write('Geometry\n')
@@ -1405,7 +1405,7 @@ as described in [2] (non-fixed energy, independent mode sampling).
   random.seed(options.r)
   amount=options.n
   if len(args)==0:
-    print usage
+    print(usage)
     quit(1)
   filename=args[0]
   outfile=options.o
@@ -1416,19 +1416,19 @@ as described in [2] (non-fixed energy, independent mode sampling).
   global LOW_FREQ
   LOW_FREQ=max(0.0000001,options.L)
 
-  print '''Initial condition generation started...
+  print('''Initial condition generation started...
 INPUT  file                  = "%s"
 OUTPUT file                  = "%s"
 Number of geometries         = %i
 Random number generator seed = %i
-Temperature                  = %f''' % (filename, outfile, options.n, options.r,options.t)
+Temperature                  = %f''' % (filename, outfile, options.n, options.r,options.t))
   if nondefmass:
     global MASS_LIST
     MASS_LIST = ask_for_masses()
   else:
-    print ''
+    print('')
   if scaling!=1.0:
-    print 'Scaling factor               = %f\n' % (scaling)
+    print('Scaling factor               = %f\n' % (scaling))
 
   global KTR
   KTR=options.KTR
@@ -1440,7 +1440,7 @@ Temperature                  = %f''' % (filename, outfile, options.n, options.r,
   global temperature
   temperature=options.t
   if temperature!=0:
-    print 'Using temperature-dependent sampling'
+    print('Using temperature-dependent sampling')
   #   print 'Script only for finite temperature. Sorry...'
   #   sys.exit()
 
@@ -1463,12 +1463,12 @@ Temperature                  = %f''' % (filename, outfile, options.n, options.r,
   for i in set(whichatoms):
     string+=ISOTOPES[i]+' '
   string+='\nIsotopes with * are pure isotopes.\n'
-  print string
+  print(string)
 
   string='Frequencies (cm^-1) used in the calculation:\n'
   for i,mode in enumerate(modes):
     string+='%4i %12.4f\n' % (i+1,mode['freq']/CM_TO_HARTREE)
-  print string
+  print(string)
 
   if options.lvc:
       lvc_input(molecule, modes)

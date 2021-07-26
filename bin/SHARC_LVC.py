@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 #******************************************
 #
@@ -23,7 +23,7 @@
 #
 #******************************************
 
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 # This script calculates QC results for a system described by the LVC model
 #
@@ -48,17 +48,17 @@ except ImportError:
   import subprocess as sp
   NONUMPY=True
 
-print "Import: CPU time: % .3f s, wall time: %.3f s"%(time.clock() - tc, time.time() - tt)
+print("Import: CPU time: % .3f s, wall time: %.3f s"%(time.clock() - tc, time.time() - tt))
 
 # =========================================================
 # compatibility stuff
 
-if sys.version_info[0]!=2:
-  print 'This is a script for Python 2!'
+if sys.version_info[0]!=3:
+  print('This is a script for Python 2!')
   sys.exit(0)
 
 if sys.version_info[1]<4:
-  print 'INFO: Script is not tested for Python <2.4! Proceed at own risk!'
+  print('INFO: Script is not tested for Python <2.4! Proceed at own risk!')
 
 if sys.version_info[1]<5:
   def any(iterable):
@@ -132,13 +132,13 @@ def checkscratch(SCRATCHDIR):
     if exist:
         isfile=os.path.isfile(SCRATCHDIR)
         if isfile:
-            print '$SCRATCHDIR=%s exists and is a file!' % (SCRATCHDIR)
+            print('$SCRATCHDIR=%s exists and is a file!' % (SCRATCHDIR))
             sys.exit(12)
     else:
         try:
             os.makedirs(SCRATCHDIR)
         except OSError:
-            print 'Can not create SCRATCHDIR=%s\n' % (SCRATCHDIR)
+            print('Can not create SCRATCHDIR=%s\n' % (SCRATCHDIR))
             sys.exit(13)
 
 # ======================================================================= #
@@ -207,7 +207,7 @@ def printcomplexmatrix(matrix,states):
       string+='-'*(11*nmstates+nmstates/3)
       string+='\n'
     istate+=1
-  print string
+  print(string)
   imag=False
   string='Imaginary Part:\n'
   string+='-'*(11*nmstates+nmstates/3)
@@ -232,7 +232,7 @@ def printcomplexmatrix(matrix,states):
     istate+=1
   string+='\n'
   if imag:
-    print string
+    print(string)
 
 # ======================================================================= #
 def printgrad(grad,natom,geo,prnorm=False):
@@ -255,11 +255,11 @@ def printgrad(grad,natom,geo,prnorm=False):
       string+='% .5f\t' % (grad[atom][xyz])
     string+='\n'
   if prnorm:
-    print 'Norm: %.6f'%norm
+    print('Norm: %.6f'%norm)
   if iszero:
-    print '\t\t...is identical zero...\n'
+    print('\t\t...is identical zero...\n')
   else:
-    print string
+    print(string)
 
 # ======================================================================= #
 
@@ -278,83 +278,83 @@ def printQMout(QMin,QMout):
   nstates=QMin['nstates']
   nmstates=QMin['nmstates']
   natom=QMin['natom']
-  print '===> Results:\n'
+  print('===> Results:\n')
   # Hamiltonian matrix, real or complex
   if 'h' in QMin or 'soc' in QMin:
     eshift=math.ceil(QMout['h'][0][0].real)
-    print '=> Hamiltonian Matrix:\nDiagonal Shift: %9.2f' % (eshift)
+    print('=> Hamiltonian Matrix:\nDiagonal Shift: %9.2f' % (eshift))
     matrix=deepcopy(QMout['h'])
     for i in range(nmstates):
       matrix[i][i]-=eshift
     printcomplexmatrix(matrix,states)
   # Dipole moment matrices
   if 'dm' in QMin:
-    print '=> Dipole Moment Matrices:\n'
+    print('=> Dipole Moment Matrices:\n')
     for xyz in range(3):
-      print 'Polarisation %s:' % (IToPol[xyz])
+      print('Polarisation %s:' % (IToPol[xyz]))
       matrix=QMout['dm'][xyz]
       printcomplexmatrix(matrix,states)
   # Gradients
   if 'grad' in QMin:
-    print '=> Gradient Vectors:\n'
+    print('=> Gradient Vectors:\n')
     istate=0
     for imult,i,ms in itnmstates(states):
-      print '%s\t%i\tMs= % .1f:' % (IToMult[imult],i,ms)
+      print('%s\t%i\tMs= % .1f:' % (IToMult[imult],i,ms))
       printgrad(QMout['grad'][istate],natom,QMin['geom'])
       istate+=1
   # Non-adiabatic couplings
   if 'nacdt' in QMin:
-    print '=> Numerical Non-adiabatic couplings:\n'
+    print('=> Numerical Non-adiabatic couplings:\n')
     matrix=QMout['nacdt']
     printcomplexmatrix(matrix,states)
     matrix=deepcopy(QMout['mrcioverlap'])
     for i in range(nmstates):
       for j in range(nmstates):
         matrix[i][j]=complex(matrix[i][j])
-    print '=> MRCI overlaps:\n'
+    print('=> MRCI overlaps:\n')
     printcomplexmatrix(matrix,states)
     if 'phases' in QMout:
-      print '=> Wavefunction Phases:\n%i\n' % (nmstates)
+      print('=> Wavefunction Phases:\n%i\n' % (nmstates))
       for i in range(nmstates):
-        print '% 3.1f % 3.1f' % (QMout['phases'][i].real,QMout['phases'][i].imag)
-      print '\n'
+        print('% 3.1f % 3.1f' % (QMout['phases'][i].real,QMout['phases'][i].imag))
+      print('\n')
   if 'nacdr' in QMin:
-      print '=> Analytical Non-adiabatic coupling vectors:\n'
+      print('=> Analytical Non-adiabatic coupling vectors:\n')
       istate=0
       for imult,i,msi in itnmstates(states):
         jstate=0
         for jmult,j,msj in itnmstates(states):
           if imult==jmult and msi==msj:
-            print '%s\tStates %i - %i\tMs= % .1f:' % (IToMult[imult],i,j,msi)
+            print('%s\tStates %i - %i\tMs= % .1f:' % (IToMult[imult],i,j,msi))
             printgrad(QMout['nacdr'][istate][jstate],natom,QMin['geom'], True)
           jstate+=1
         istate+=1
   if 'dmdr' in QMin:
-      print '=> Dipole moment derivative vectors:\n'
+      print('=> Dipole moment derivative vectors:\n')
       istate=0
       for imult,i,msi in itnmstates(states):
         jstate=0
         for jmult,j,msj in itnmstates(states):
           if imult==jmult and msi==msj:
             for ipol in range(3):
-              print '%s\tStates %i - %i\tMs= % .1f\tPolarization %s:' % (IToMult[imult],i,j,msi,IToPol[ipol])
+              print('%s\tStates %i - %i\tMs= % .1f\tPolarization %s:' % (IToMult[imult],i,j,msi,IToPol[ipol]))
               printgrad(QMout['dmdr'][istate][jstate][ipol],natom,QMin['geom'])
           jstate+=1
         istate+=1
   if 'overlap' in QMin:
-    print '=> Overlap matrix:\n'
+    print('=> Overlap matrix:\n')
     matrix=QMout['overlap']
     printcomplexmatrix(matrix,states)
     if 'phases' in QMout:
-      print '=> Wavefunction Phases:\n%i\n' % (nmstates)
+      print('=> Wavefunction Phases:\n%i\n' % (nmstates))
       for i in range(nmstates):
-        print '% 3.1f % 3.1f' % (QMout['phases'][i].real,QMout['phases'][i].imag)
-      print '\n'
+        print('% 3.1f % 3.1f' % (QMout['phases'][i].real,QMout['phases'][i].imag))
+      print('\n')
   # Angular momentum matrices
   if 'angular' in QMin:
-    print '=> Angular Momentum Matrices:\n'
+    print('=> Angular Momentum Matrices:\n')
     for xyz in range(3):
-      print 'Polarisation %s:' % (IToPol[xyz])
+      print('Polarisation %s:' % (IToPol[xyz]))
       matrix=QMout['angular'][xyz]
       printcomplexmatrix(matrix,states)
   sys.stdout.flush()
@@ -368,7 +368,7 @@ class diagonalizer:
     exe=os.getenv('SHARC')
     exe=os.path.expanduser(os.path.expandvars(exe))+'/diagonalizer.x'
     if not os.path.isfile(exe):
-      print 'SHARC auxilliary diagonalizer not found at %s!' % (exe)
+      print('SHARC auxilliary diagonalizer not found at %s!' % (exe))
       sys.exit(14)
     self.exe=exe
   def eigh(self,H):
@@ -455,7 +455,7 @@ def eformat(f, prec, exp_digits):
   try:
     mantissa, exp = s.split('e')
   except:
-    print f, s
+    print(f, s)
     raise
   return "%sE%+0*d"%(mantissa, exp_digits+1, int(exp))
 
@@ -476,7 +476,7 @@ def writeQMout(QMin,QMout,QMinfilename):
   else:
     outfilename=QMinfilename[:k]+'.out'
   if PRINT:
-    print '===> Writing output to file %s in SHARC Format\n' % (outfilename)
+    print('===> Writing output to file %s in SHARC Format\n' % (outfilename))
   string=''
   for iatom in range(QMin['natom']):
     string+=QMin['geom'][iatom][0]
@@ -506,7 +506,7 @@ def writeQMout(QMin,QMout,QMinfilename):
     outfile.write(string)
     outfile.close()
   except IOError:
-    print 'Could not write QM output!'
+    print('Could not write QM output!')
     sys.exit(15)
   if 'backup' in QMin:
     try:
@@ -514,7 +514,7 @@ def writeQMout(QMin,QMout,QMinfilename):
       outfile.write(string)
       outfile.close()
     except IOError:
-      print 'WARNING: Could not write QM output backup!'
+      print('WARNING: Could not write QM output backup!')
   return
 
 # ======================================================================= #
@@ -824,7 +824,7 @@ def read_QMin():
         states.append(int(s[iatom+1]))
       break
   else:
-    print 'No state keyword given!'
+    print('No state keyword given!')
     sys.exit(16)
   nstates=0
   nmstates=0
@@ -861,7 +861,7 @@ def read_QMin():
     for j in range(3):
       geom[i][j+1]/=factor
   QMin['geom']=geom
-  print geom
+  print(geom)
 
   # find init, samestep, restart
   for line in qmin[2:]:
@@ -891,7 +891,7 @@ def read_QMin():
   if not 'init' in QMin and not 'samestep' in QMin and not 'restart' in QMin:
     fromfile=os.path.join(QMin['savedir'],'U.out')
     if not os.path.isfile(fromfile):
-      print 'ERROR: savedir does not contain U.out! Maybe you need to add "init" to QM.in.'
+      print('ERROR: savedir does not contain U.out! Maybe you need to add "init" to QM.in.')
       sys.exit(17)
     tofile=os.path.join(QMin['savedir'],'Uold.out')
     shutil.copy(fromfile,tofile)
@@ -906,10 +906,10 @@ def read_QMin():
         if s[0] in t:
             QMin[s[0]] = []
     if 'nacdt' in s[0]:
-      print 'NACDT is not supported!'
+      print('NACDT is not supported!')
       sys.exit(18)
     if 'dmdr' in s[0]:
-      print 'DMDR is not supported!'
+      print('DMDR is not supported!')
       sys.exit(19)
 
   QMin['pwd']=os.getcwd()
@@ -955,7 +955,7 @@ def read_V0(QMin, SH2LVC, fname='V0.txt'):
   try:
     f=open(fname)
   except IOError:
-    print 'Input file %s not found.'%fname
+    print('Input file %s not found.'%fname)
     sys.exit(20)
   v0=f.readlines()
   f.close()
@@ -968,8 +968,8 @@ def read_V0(QMin, SH2LVC, fname='V0.txt'):
   for i in range(QMin['natom']):
     s=tmp[i].lower().split()
     if s[0]!=geom[i][0].lower():
-      print s[0], geom[i][0]
-      print 'Inconsistent atom labels in QM.in and %s!'%fname
+      print(s[0], geom[i][0])
+      print('Inconsistent atom labels in QM.in and %s!'%fname)
       sys.exit(21)
     disp += [geom[i][1] - float(s[2]), geom[i][2] - float(s[3]), geom[i][3] - float(s[4])]
     SH2LVC['Ms'] += 3*[(float(s[5])*U_TO_AMU)**.5]
@@ -977,16 +977,16 @@ def read_V0(QMin, SH2LVC, fname='V0.txt'):
   # Frequencies (a.u.)
   tmp = find_lines(1, 'Frequencies',v0)
   if tmp==[]:
-    print 'No Frequencies defined in %s!'%fname
+    print('No Frequencies defined in %s!'%fname)
     sys.exit(22)
   SH2LVC['Om'] = [float(o) for o in tmp[0].split()]
 
   # Normal modes in mass-weighted coordinates
   tmp = find_lines(len(SH2LVC['Om']), 'Mass-weighted normal modes', v0)
   if tmp==[]:
-    print 'No normal modes given in %s!'%fname
+    print('No normal modes given in %s!'%fname)
     sys.exit(23)
-  SH2LVC['V']  = [map(float,line.split()) for line in tmp] # transformation matrix
+  SH2LVC['V']  = [list(map(float,line.split())) for line in tmp] # transformation matrix
 
   return disp
 
@@ -1001,7 +1001,7 @@ def read_SH2LVC(QMin, fname='LVC.template'):
     try:
       f=open('SH2LVC.inp')
     except IOError:
-      print 'Input file "LVC.template" not found.'
+      print('Input file "LVC.template" not found.')
       sys.exit(24)
   sh2lvc=f.readlines()
   f.close()
@@ -1011,12 +1011,12 @@ def read_SH2LVC(QMin, fname='LVC.template'):
   # check nstates
   states=[int(s) for s in sh2lvc[1].split()]
   if not states==QMin['states']:
-    print 'states from QM.in and nstates from LVC.template are inconsistent!', QMin['states'], states
+    print('states from QM.in and nstates from LVC.template are inconsistent!', QMin['states'], states)
     sys.exit(25)
   nstates = QMin['nstates']
   nmstates = QMin['nmstates']
   nmult = len(states)
-  r3N = range(3*QMin['natom'])
+  r3N = list(range(3*QMin['natom']))
   Om = SH2LVC['Om']
 
   # Transform the coordinates to dimensionless mass-weighted normal modes
@@ -1124,7 +1124,7 @@ def getQMout(QMin,SH2LVC):
   QMout={}
 
   nmult = len(QMin['states'])
-  r3N = range(3*QMin['natom'])
+  r3N = list(range(3*QMin['natom']))
 
   # Diagonalize Hamiltonian and expand to the full ms-basis
   U  = [[ 0. for i in range(QMin['nmstates']) ] for j in range(QMin['nmstates']) ]
@@ -1219,7 +1219,7 @@ def getQMout(QMin,SH2LVC):
         Uold = [[float(v) for v in line.split()] for line in open(Uoldfile, 'r').readlines()]
         if NONUMPY:
           overlap = [ [ 0. for i in range(QMin['nmstates']) ] for j in range(QMin['nmstates']) ]
-          rS = range(QMin['nmstates'])
+          rS = list(range(QMin['nmstates']))
           for a in rS:
             for b in rS:
               for i in rS:
@@ -1259,10 +1259,10 @@ def main():
 
   QMin=read_QMin()
   SH2LVC,QMin=read_SH2LVC(QMin)
-  print "SH2LVC: CPU time: % .3f s, wall time: %.3f s"%(time.clock() - tc, time.time() - tt)
+  print("SH2LVC: CPU time: % .3f s, wall time: %.3f s"%(time.clock() - tc, time.time() - tt))
 
   QMout=getQMout(QMin,SH2LVC)
-  print "QMout:  CPU time: % .3f s, wall time: %.3f s"%(time.clock() - tc, time.time() - tt)
+  print("QMout:  CPU time: % .3f s, wall time: %.3f s"%(time.clock() - tc, time.time() - tt))
 
   # This print routine takes about 10 ms, i.e. ~5% of the total execution time
   printQMout(QMin,QMout)
@@ -1270,15 +1270,15 @@ def main():
 
   # Write QMout
   writeQMout(QMin,QMout,'QM.in')
-  print "Write:  CPU time: % .3f s, wall time: %.3f s"%(time.clock() - tc, time.time() - tt)
+  print("Write:  CPU time: % .3f s, wall time: %.3f s"%(time.clock() - tc, time.time() - tt))
 
-  print "Final:  CPU time: % .3f s, wall time: %.3f s"%(time.clock() - tc, time.time() - tt)
-  print '#================ END ================#'
+  print("Final:  CPU time: % .3f s, wall time: %.3f s"%(time.clock() - tc, time.time() - tt))
+  print('#================ END ================#')
 
 # ============================================================================
 if __name__ == '__main__':
   try:
     main()
   except KeyboardInterrupt:
-    print '\nCtrl+C makes me a sad SHARC ;-(\n'
+    print('\nCtrl+C makes me a sad SHARC ;-(\n')
     sys.exit(0)

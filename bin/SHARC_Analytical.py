@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 #******************************************
 #
@@ -23,7 +23,7 @@
 #
 #******************************************
 
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 # This script calculates QC results for a model system
 # 
@@ -51,12 +51,12 @@ except ImportError:
 # =========================================================
 # compatibility stuff
 
-if sys.version_info[0]!=2:
-  print 'This is a script for Python 2!'
+if sys.version_info[0]!=3:
+  print('This is a script for Python 2!')
   sys.exit(0)
 
 if sys.version_info[1]<4:
-  print 'INFO: Script is not tested for Python <2.4! Proceed at own risk!'
+  print('INFO: Script is not tested for Python <2.4! Proceed at own risk!')
 
 if sys.version_info[1]<5:
   def any(iterable):
@@ -185,7 +185,7 @@ def printcomplexmatrix(matrix,states):
       string+='-'*(11*nmstates+nmstates/3)
       string+='\n'
     istate+=1
-  print string
+  print(string)
   imag=False
   string='Imaginary Part:\n'
   string+='-'*(11*nmstates+nmstates/3)
@@ -210,7 +210,7 @@ def printcomplexmatrix(matrix,states):
     istate+=1
   string+='\n'
   if imag:
-    print string
+    print(string)
 
 # ======================================================================= #
 def printgrad(grad,natom,geo):
@@ -231,9 +231,9 @@ def printgrad(grad,natom,geo):
       string+='% .5f\t' % (grad[atom][xyz])
     string+='\n'
   if iszero:
-    print '\t\t...is identical zero...\n'
+    print('\t\t...is identical zero...\n')
   else:
-    print string
+    print(string)
 
 # ======================================================================= #
 
@@ -252,83 +252,83 @@ def printQMout(QMin,QMout):
   nstates=QMin['nstates']
   nmstates=QMin['nmstates']
   natom=QMin['natom']
-  print '===> Results:\n'
+  print('===> Results:\n')
   # Hamiltonian matrix, real or complex
   if 'h' in QMin or 'soc' in QMin:
     eshift=math.ceil(QMout['h'][0][0].real)
-    print '=> Hamiltonian Matrix:\nDiagonal Shift: %9.2f' % (eshift)
+    print('=> Hamiltonian Matrix:\nDiagonal Shift: %9.2f' % (eshift))
     matrix=deepcopy(QMout['h'])
     for i in range(nmstates):
       matrix[i][i]-=eshift
     printcomplexmatrix(matrix,states)
   # Dipole moment matrices
   if 'dm' in QMin:
-    print '=> Dipole Moment Matrices:\n'
+    print('=> Dipole Moment Matrices:\n')
     for xyz in range(3):
-      print 'Polarisation %s:' % (IToPol[xyz])
+      print('Polarisation %s:' % (IToPol[xyz]))
       matrix=QMout['dm'][xyz]
       printcomplexmatrix(matrix,states)
   # Gradients
   if 'grad' in QMin:
-    print '=> Gradient Vectors:\n'
+    print('=> Gradient Vectors:\n')
     istate=0
     for imult,i,ms in itnmstates(states):
-      print '%s\t%i\tMs= % .1f:' % (IToMult[imult],i,ms)
+      print('%s\t%i\tMs= % .1f:' % (IToMult[imult],i,ms))
       printgrad(QMout['grad'][istate],natom,QMin['geom'])
       istate+=1
   # Non-adiabatic couplings
   if 'nacdt' in QMin:
-    print '=> Numerical Non-adiabatic couplings:\n'
+    print('=> Numerical Non-adiabatic couplings:\n')
     matrix=QMout['nacdt']
     printcomplexmatrix(matrix,states)
     matrix=deepcopy(QMout['mrcioverlap'])
     for i in range(nmstates):
       for j in range(nmstates):
         matrix[i][j]=complex(matrix[i][j])
-    print '=> MRCI overlaps:\n'
+    print('=> MRCI overlaps:\n')
     printcomplexmatrix(matrix,states)
     if 'phases' in QMout:
-      print '=> Wavefunction Phases:\n%i\n' % (nmstates)
+      print('=> Wavefunction Phases:\n%i\n' % (nmstates))
       for i in range(nmstates):
-        print '% 3.1f % 3.1f' % (QMout['phases'][i].real,QMout['phases'][i].imag)
-      print '\n'
+        print('% 3.1f % 3.1f' % (QMout['phases'][i].real,QMout['phases'][i].imag))
+      print('\n')
   if 'nacdr' in QMin:
-      print '=> Analytical Non-adiabatic coupling vectors:\n'
+      print('=> Analytical Non-adiabatic coupling vectors:\n')
       istate=0
       for imult,i,msi in itnmstates(states):
         jstate=0
         for jmult,j,msj in itnmstates(states):
           if imult==jmult and msi==msj:
-            print '%s\tStates %i - %i\tMs= % .1f:' % (IToMult[imult],i,j,msi)
+            print('%s\tStates %i - %i\tMs= % .1f:' % (IToMult[imult],i,j,msi))
             printgrad(QMout['nacdr'][istate][jstate],natom,QMin['geom'])
           jstate+=1
         istate+=1
   if 'dmdr' in QMin:
-      print '=> Dipole moment derivative vectors:\n'
+      print('=> Dipole moment derivative vectors:\n')
       istate=0
       for imult,i,msi in itnmstates(states):
         jstate=0
         for jmult,j,msj in itnmstates(states):
           if imult==jmult and msi==msj:
             for ipol in range(3):
-              print '%s\tStates %i - %i\tMs= % .1f\tPolarization %s:' % (IToMult[imult],i,j,msi,IToPol[ipol])
+              print('%s\tStates %i - %i\tMs= % .1f\tPolarization %s:' % (IToMult[imult],i,j,msi,IToPol[ipol]))
               printgrad(QMout['dmdr'][istate][jstate][ipol],natom,QMin['geom'])
           jstate+=1
         istate+=1
   if 'overlap' in QMin:
-    print '=> Overlap matrix:\n'
+    print('=> Overlap matrix:\n')
     matrix=QMout['overlap']
     printcomplexmatrix(matrix,states)
     if 'phases' in QMout:
-      print '=> Wavefunction Phases:\n%i\n' % (nmstates)
+      print('=> Wavefunction Phases:\n%i\n' % (nmstates))
       for i in range(nmstates):
-        print '% 3.1f % 3.1f' % (QMout['phases'][i].real,QMout['phases'][i].imag)
-      print '\n'
+        print('% 3.1f % 3.1f' % (QMout['phases'][i].real,QMout['phases'][i].imag))
+      print('\n')
   # Angular momentum matrices
   if 'angular' in QMin:
-    print '=> Angular Momentum Matrices:\n'
+    print('=> Angular Momentum Matrices:\n')
     for xyz in range(3):
-      print 'Polarisation %s:' % (IToPol[xyz])
+      print('Polarisation %s:' % (IToPol[xyz]))
       matrix=QMout['angular'][xyz]
       printcomplexmatrix(matrix,states)
   sys.stdout.flush()
@@ -344,13 +344,13 @@ def checkscratch(SCRATCHDIR):
     if exist:
         isfile=os.path.isfile(SCRATCHDIR)
         if isfile:
-            print '$SCRATCHDIR=%s exists and is a file!' % (SCRATCHDIR)
+            print('$SCRATCHDIR=%s exists and is a file!' % (SCRATCHDIR))
             sys.exit(12)
     else:
         try:
             os.makedirs(SCRATCHDIR)
         except OSError:
-            print 'Can not create SCRATCHDIR=%s\n' % (SCRATCHDIR)
+            print('Can not create SCRATCHDIR=%s\n' % (SCRATCHDIR))
             sys.exit(13)
 
 # =========================================================
@@ -362,7 +362,7 @@ class diagonalizer:
     exe=os.getenv('SHARC')
     exe=os.path.expanduser(os.path.expandvars(exe))+'/diagonalizer.x'
     if not os.path.isfile(exe):
-      print 'SHARC auxilliary diagonalizer not found at %s!' % (exe)
+      print('SHARC auxilliary diagonalizer not found at %s!' % (exe))
       sys.exit(14)
     self.exe=exe
   def eigh(self,H):
@@ -492,7 +492,7 @@ def writeQMout(QMin,QMout,QMinfilename):
     outfile.write(string)
     outfile.close()
   except IOError:
-    print 'Could not write to savedir!'
+    print('Could not write to savedir!')
     sys.exit(15)
 
   os.chdir(QMin['pwd'])
@@ -502,7 +502,7 @@ def writeQMout(QMin,QMout,QMinfilename):
   else:
     outfilename=QMinfilename[:k]+'.out'
   if PRINT:
-    print '===> Writing output to file %s in SHARC Format\n' % (outfilename)
+    print('===> Writing output to file %s in SHARC Format\n' % (outfilename))
   string=''
   if 'h' in QMin or 'soc' in QMin:
     string+=writeQMoutsoc(QMin,QMout)
@@ -528,7 +528,7 @@ def writeQMout(QMin,QMout,QMinfilename):
     outfile.write(string)
     outfile.close()
   except IOError:
-    print 'Could not write QM output!'
+    print('Could not write QM output!')
     sys.exit(16)
   if 'backup' in QMin:
     try:
@@ -536,7 +536,7 @@ def writeQMout(QMin,QMout,QMinfilename):
       outfile.write(string)
       outfile.close()
     except IOError:
-      print 'WARNING: Could not write QM output backup!'
+      print('WARNING: Could not write QM output backup!')
   return
 
 # ======================================================================= #
@@ -834,7 +834,7 @@ class func_mat:
     for i in range(n):
       s=strings[i].strip().split(',')
       if any([j.strip()=='' for j in s[0:i+1]]):
-        print 'Matrix elements missing in definition!'
+        print('Matrix elements missing in definition!')
         sys.exit(17)
       a.append(s)
     return a
@@ -926,7 +926,7 @@ def read_QMin():
         states.append(int(s[iatom+1]))
       break
   else:
-    print 'No state keyword given!'
+    print('No state keyword given!')
     sys.exit(18)
   nstates=0
   nmstates=0
@@ -1017,7 +1017,7 @@ def read_QMin():
     if len(s)==0:
       continue
     if 'nacdt' in s[0] or 'nacdr' in s[0]:
-      print 'NACDR and NACDT are not supported!'
+      print('NACDR and NACDT are not supported!')
       sys.exit(19)
     if 'dmdr' in s[0]:
       QMin['dmdr']=[]
@@ -1059,13 +1059,13 @@ def read_SH2Ana(QMin):
   # check natoms
   natom=int(sh2ana[0])
   if not natom==QMin['natom']:
-    print 'Natom from QM.in and from SH2Ana.inp are inconsistent!'
+    print('Natom from QM.in and from SH2Ana.inp are inconsistent!')
     sys.exit(20)
 
   # check nstates
   nstates=int(sh2ana[1])
   if not nstates==QMin['nmstates']:
-    print 'NMstates from QM.in and nstates from SH2Ana.inp are inconsistent!'
+    print('NMstates from QM.in and nstates from SH2Ana.inp are inconsistent!')
     sys.exit(21)
 
   # read the coordinate <-> variable mapping
@@ -1073,7 +1073,7 @@ def read_SH2Ana(QMin):
   for i in range(natom):
     s=sh2ana[i+2].lower().split()
     if s[0]!=QMin['geom'][i][0].lower():
-      print 'Inconsistent atom labels in QM.in and SH2Ana.inp!'
+      print('Inconsistent atom labels in QM.in and SH2Ana.inp!')
       sys.exit(22)
     gvar.append(s[1:])
   var={}
@@ -1083,10 +1083,10 @@ def read_SH2Ana(QMin):
       if v=='0':
         continue
       if v[0:1]=='_':
-        print 'Variable names must not start with an underscore!'
+        print('Variable names must not start with an underscore!')
         sys.exit(23)
       if v in var:
-        print 'Repeated variable in geom<->var mapping in SH2Ana.inp!'
+        print('Repeated variable in geom<->var mapping in SH2Ana.inp!')
         sys.exit(24)
       var[v]=[i,j]
 
@@ -1110,10 +1110,10 @@ def read_SH2Ana(QMin):
         if 'end' in s[0].lower():
           break
         if s[0][0:1]=='_':
-          print 'Variable names must not start with an underscore!'
+          print('Variable names must not start with an underscore!')
           sys.exit(25)
         if s[0] in var:
-          print 'Repeated variable in additional variables in SH2Ana.inp!'
+          print('Repeated variable in additional variables in SH2Ana.inp!')
           sys.exit(26)
         var[s[0]]=float(s[1])
 
@@ -1136,7 +1136,7 @@ def read_SH2Ana(QMin):
   # obtain the Hamiltonian
   Hstring=find_lines(nstates,'Hamiltonian',sh2ana)
   if Hstring==[]:
-    print 'No Hamiltonian defined in SH2Ana.inp!'
+    print('No Hamiltonian defined in SH2Ana.inp!')
     sys.exit(27)
   fmat=func_mat(Hstring)
   SH2ANA['H']=fmat.mat(QMin['geom'],SH2ANA['var'])
@@ -1150,7 +1150,7 @@ def read_SH2Ana(QMin):
     if isinstance(var[v],list):
       Dstring=find_lines(nstates,'Derivatives %s' % (v),sh2ana)
       if Dstring==[]:
-        print 'No derivative matrix for variable %s defined in SH2Ana.inp!' % (v)
+        print('No derivative matrix for variable %s defined in SH2Ana.inp!' % (v))
         sys.exit(28)
       fmat=func_mat(Dstring)
       SH2ANA['deriv'][v]=fmat.mat(QMin['geom'],SH2ANA['var'])
@@ -1321,12 +1321,12 @@ def main():
   # Write QMout
   writeQMout(QMin,QMout,'QM.in')
 
-  print '#================ END ================#'
+  print('#================ END ================#')
 
 # ============================================================================
 if __name__ == '__main__':
   try:
     main()
   except KeyboardInterrupt:
-    print '\nCtrl+C makes me a sad SHARC ;-(\n'
+    print('\nCtrl+C makes me a sad SHARC ;-(\n')
     sys.exit(0)
