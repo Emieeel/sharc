@@ -103,7 +103,7 @@ import traceback
 # compatibility stuff
 
 if sys.version_info[0]!=3:
-    print('This is a script for Python 2!')
+    print('This is a script for Python 3!')
     sys.exit(0)
 
 if sys.version_info[1]<5:
