@@ -96,35 +96,6 @@ def writefile(filename,content):
     print('Could not write to file %s!' % (filename))
     sys.exit(13)
 
-# ======================================================================= #
-def link(PATH,NAME,crucial=True,force=True):
-  # do not create broken links
-  if not os.path.exists(PATH):
-    print('Source %s does not exist, cannot create link!' % (PATH))
-    sys.exit(14)
-  if os.path.islink(NAME):
-    if not os.path.exists(NAME):
-      # NAME is a broken link, remove it so that a new link can be made
-      os.remove(NAME)
-    else:
-      # NAME is a symlink pointing to a valid file
-      if force:
-        # remove the link if forced to
-        os.remove(NAME)
-      else:
-        print('%s exists, cannot create a link of the same name!' % (NAME))
-        if crucial:
-          sys.exit(15)
-        else:
-          return
-  elif os.path.exists(NAME):
-    # NAME is not a link. The interface will not overwrite files/directories with links, even with force=True
-    print('%s exists, cannot create a link of the same name!' % (NAME))
-    if crucial:
-      sys.exit(16)
-    else:
-      return
-  os.symlink(PATH, NAME)
 
 # ======================================================================= #
 def isbinary(path):
@@ -1053,7 +1024,7 @@ def readQMin(QMinfilename):
 #     print('changelog:\n',changelogstring)
 #     sys.exit(91)
 # QMinfilename=sys.argv[1]
-qm_dir = '/home/emielkoridon/PhD_stuff/sharc_saoovqe/QM_test'
+qm_dir = '/home/emielkoridon/PhD_stuff/sharc_saoovqe/formaldimine_test_2/scratch/TRAJ/QM'
 os.chdir(qm_dir)
 QMinfilename=qm_dir + '/QM.in'
 
