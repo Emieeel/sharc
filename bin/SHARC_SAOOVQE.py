@@ -511,8 +511,9 @@ def readQMin(QMinfilename):
     if 'phases' in QMin:
         QMin['overlap']=[]
 
-    if 'overlap' in QMin and 'init' in QMin:
-        print('"overlap" and "phases" cannot be calculated in the first timestep! Delete either "overlap" or "init"')
+    if 'overlap' in QMin:# and 'init' in QMin:
+        # print('"overlap" and "phases" cannot be calculated in the first timestep! Delete either "overlap" or "init"')
+        print("Overlap not implemented for SAOOVQE")
         sys.exit(43)
 
     if not 'init' in QMin and not 'samestep' in QMin:
